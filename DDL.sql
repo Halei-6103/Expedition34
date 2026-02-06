@@ -51,7 +51,8 @@ CREATE TABLE Reviews (
     PRIMARY KEY (reviewID),
     UNIQUE(userID, gameID),
     FOREIGN KEY (userID) REFERENCES Users(userID),
-    FOREIGN KEY (gameID) REFERENCES Games(gameID)
+    FOREIGN KEY (gameID) REFERENCES Games(gameID),
+    CHECK (rating >= 1 AND rating <= 5) -- rating must be between 1 and 5
 );
 
 
