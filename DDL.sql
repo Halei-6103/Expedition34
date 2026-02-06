@@ -51,7 +51,9 @@ CREATE TABLE Reviews (
     PRIMARY KEY (reviewID),
     UNIQUE(userID, gameID),
     FOREIGN KEY (userID) REFERENCES Users(userID),
-    FOREIGN KEY (gameID) REFERENCES Games(gameID)
+    FOREIGN KEY (gameID) REFERENCES Games(gameID),
+    CHECK (rating BETWEEN 1 AND 5),
+    CHECK (category IN ('bug', 'suggestion', 'general') OR category IS NULL)
 );
 
 
