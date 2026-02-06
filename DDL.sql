@@ -108,4 +108,5 @@ INSERT INTO Reviews (userID, gameID, rating, comment, category) VALUES
 (2, 3, 5, 'Super relaxing experience.', 'general'),
 
 (3, 3, 2, 'Too repetitive for me.', 'general'),
-(3, 1, 4, 'Solid mechanics overall.', 'general');
+(3, 1, 4, 'Solid mechanics overall.', 'general'),
+(5, 1, 4, 'Good idea but could be improved by doing (example)', 'suggestion');
