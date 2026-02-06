@@ -1,3 +1,13 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS Reviews;
+DROP TABLE IF EXISTS Purchases;
+DROP TABLE IF EXISTS Games;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Developers;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 CREATE TABLE Developers (
     developerID int AUTO_INCREMENT NOT NULL,
     developerName varchar(100) NOT NULL,
@@ -100,12 +110,12 @@ INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES
 -- Reviews (1:M Users -> Reviews, 1:M Games -> Reviews)
 -- ----------------------------
 INSERT INTO Reviews (userID, gameID, rating, comment, category) VALUES
-(1, 1, 5, 'Loved the combat system!', 'gameplay'),
-(1, 2, 3, NULL, 'performance'),
-(1, 4, 4, 'Challenging but fun.', 'difficulty'),
+(1, 1, 5, 'Loved the combat system!', 'general'),
+(1, 2, 3, NULL, 'general'),
+(1, 4, 4, 'Challenging but fun.', 'general'),
 
-(2, 1, 4, 'Great, but needs balancing.', 'balance'),
-(2, 3, 5, 'Super relaxing experience.', 'atmosphere'),
+(2, 1, 4, 'Great, but needs balancing.', 'bug'),
+(2, 3, 5, 'Super relaxing experience.', 'general'),
 
-(3, 3, 2, 'Too repetitive for me.', 'gameplay'),
-(3, 1, 4, 'Solid mechanics overall.', 'mechanics');
+(3, 3, 2, 'Too repetitive for me.', 'general'),
+(3, 1, 4, 'Solid mechanics overall.', 'general');
