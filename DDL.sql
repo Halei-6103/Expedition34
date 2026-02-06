@@ -62,11 +62,11 @@ CREATE TABLE Reviews (
 -- ----------------------------
 
 INSERT INTO Users (username, accountType) VALUES
-('jade', 'customer'),
-('ian',  'customer'),
-('Jack', 'customer'),
-('guest_user', 'customer'), -- zero purchases & zero reviews
-('alex', 'customer');       -- purchases but no reviews
+('jade', 'user'),
+('ian',  'user'),
+('Jack', 'user'),
+('guest_user', 'user'), -- zero purchases & zero reviews
+('alex', 'user');       -- purchases but no reviews
 
 INSERT INTO Developers (developerName) VALUES
 ('PNW Game Studios'),
