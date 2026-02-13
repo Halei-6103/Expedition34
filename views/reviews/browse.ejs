@@ -1,0 +1,14 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<div class="toolbar">
+  <a href="/reviews">Reviews</a>
+  <a href="/reviews/add" class="primary">Add</a>
+</div>
+<% if (reviews && reviews.length) { %>
+  <div class="data-list">
+    <ul><% reviews.forEach(r => { %><li>User <%= r.userID %> — Game <%= r.gameID %> — <%= r.rating %>/5</li><% }); %></ul>
+  </div>
+<% } else { %>
+  <div class="empty-state">No reviews yet. (DB not connected.)</div>
+<% } %>
+<%- include('../partials/footer') %>

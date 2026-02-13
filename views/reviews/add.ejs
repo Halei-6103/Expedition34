@@ -1,0 +1,12 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<form action="/reviews/add" method="post">
+  <label>User <select name="userID" required><option value="">— Select user —</option><% if (users && users.length) { users.forEach(u => { %><option value="<%= u.userID %>"><%= u.username %></option><% }); } %></select></label>
+  <label>Game <select name="gameID" required><option value="">— Select game —</option><% if (games && games.length) { games.forEach(g => { %><option value="<%= g.gameID %>"><%= g.title %></option><% }); } %></select></label>
+  <label>Rating (1–5) <input type="number" name="rating" min="1" max="5" required /></label>
+  <label>Comment <textarea name="comment" rows="3" placeholder="Optional"></textarea></label>
+  <label>Category <select name="category"><option value="">— None —</option><option value="general">general</option><option value="bug">bug</option><option value="suggestion">suggestion</option></select></label>
+  <button type="submit">Add review</button>
+</form>
+<a href="/reviews" class="back-link">← Back to Reviews</a>
+<%- include('../partials/footer') %>

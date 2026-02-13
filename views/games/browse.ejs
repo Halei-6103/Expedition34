@@ -1,0 +1,14 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<div class="toolbar">
+  <a href="/games">Games</a>
+  <a href="/games/add" class="primary">Add</a>
+</div>
+<% if (games && games.length) { %>
+  <div class="data-list">
+    <ul><% games.forEach(g => { %><li><%= g.title %> — $<%= g.price %></li><% }); %></ul>
+  </div>
+<% } else { %>
+  <div class="empty-state">No games yet. (DB not connected.)</div>
+<% } %>
+<%- include('../partials/footer') %>
