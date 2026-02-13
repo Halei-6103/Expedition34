@@ -1,0 +1,8 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<form action="/developers/add" method="post">
+  <label>Developer name <input type="text" name="developerName" required placeholder="e.g. PNW Game Studios" /></label>
+  <button type="submit">Add developer</button>
+</form>
+<a href="/developers" class="back-link">← Back to Developers</a>
+<%- include('../partials/footer') %>

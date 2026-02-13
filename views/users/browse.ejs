@@ -1,0 +1,14 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<div class="toolbar">
+  <a href="/users">Users</a>
+  <a href="/users/add" class="primary">Add</a>
+</div>
+<% if (users && users.length) { %>
+  <div class="data-list">
+    <ul><% users.forEach(u => { %><li><%= u.username %> (<%= u.accountType %>)</li><% }); %></ul>
+  </div>
+<% } else { %>
+  <div class="empty-state">No users yet. (DB not connected.)</div>
+<% } %>
+<%- include('../partials/footer') %>

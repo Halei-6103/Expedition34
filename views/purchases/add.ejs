@@ -1,0 +1,11 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<form action="/purchases/add" method="post">
+  <label>User <select name="userID" required><option value="">— Select user —</option><% if (users && users.length) { users.forEach(u => { %><option value="<%= u.userID %>"><%= u.username %></option><% }); } %></select></label>
+  <label>Game <select name="gameID" required><option value="">— Select game —</option><% if (games && games.length) { games.forEach(g => { %><option value="<%= g.gameID %>"><%= g.title %></option><% }); } %></select></label>
+  <label>Date & time <input type="datetime-local" name="purchaseDate" required /></label>
+  <label>Price <input type="number" name="purchasePrice" step="0.01" min="0" required placeholder="0.00" /></label>
+  <button type="submit">Add purchase</button>
+</form>
+<a href="/purchases" class="back-link">← Back to Purchases</a>
+<%- include('../partials/footer') %>
