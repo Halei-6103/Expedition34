@@ -4,9 +4,30 @@
   <a href="/purchases">Purchases</a>
   <a href="/purchases/add" class="primary">Add</a>
 </div>
+
 <% if (purchases && purchases.length) { %>
   <div class="data-list">
-    <ul><% purchases.forEach(p => { %><li>User <%= p.userID %> — Game <%= p.gameID %> — $<%= p.purchasePrice %></li><% }); %></ul>
+    <table border="1">
+      <tr>
+        <th>PurchaseID</th>
+        <th>User ID</th>
+        <th>Game ID</th>
+        <th>Date</th>
+        <th>Price</th>
+        <th>Category</th>
+      </tr>
+
+      <% purchases.forEach(p => { %>
+       <tr>
+        <td> <%= p.purchaseID %> </td>
+        <td> <%= p.userID %> </td>
+        <td> <%= p.gameID %> </td>
+        <td> <%= p.purchaseDate %> </td>
+        <td> <%= p.purchasePrice %> </td>
+       </tr>
+  <% }) %>
+
+   </table>
   </div>
 <% } else { %>
   <div class="empty-state">No purchases yet. (DB not connected.)</div>

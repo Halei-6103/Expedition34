@@ -6,7 +6,26 @@
 </div>
 <% if (games && games.length) { %>
   <div class="data-list">
-    <ul><% games.forEach(g => { %><li><%= g.title %> — $<%= g.price %></li><% }); %></ul>
+    <table border="1">
+      <tr>
+        <th>GameID</th>
+        <th>DeveloperID</th>
+        <th>Price</th>
+        <th>Title</th>
+        <th>description</th>
+      </tr>
+
+      <% games.forEach(g => { %>
+       <tr>
+        <td> <%= g.gameID %> </td>
+        <td> <%= g.developerID %> </td>
+        <td> <%= g.price %> </td>
+        <td> <%= g.title %> </td>
+        <td> <%= g.description %> </td>
+       </tr>
+  <% }) %>
+
+   </table>
   </div>
 <% } else { %>
   <div class="empty-state">No games yet. (DB not connected.)</div>

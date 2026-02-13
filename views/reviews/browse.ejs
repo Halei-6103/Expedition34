@@ -6,8 +6,30 @@
 </div>
 <% if (reviews && reviews.length) { %>
   <div class="data-list">
-    <ul><% reviews.forEach(r => { %><li>User <%= r.userID %> — Game <%= r.gameID %> — <%= r.rating %>/5</li><% }); %></ul>
+    <table border="1">
+      <tr>
+        <th>ReviewID</th>
+        <th>UserID</th>
+        <th>GameID</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Category</th>
+      </tr>
+
+      <% reviews.forEach(r => { %>
+       <tr>
+        <td> <%= r.reviewID %> </td>
+        <td> <%= r.userID %> </td>
+        <td> <%= r.gameID %> </td>
+        <td> <%= r.rating %> </td>
+        <td> <%= r.comment %> </td>
+        <td> <%= r.category %> </td>
+       </tr>
+  <% }) %>
+
+   </table>
   </div>
+
 <% } else { %>
   <div class="empty-state">No reviews yet. (DB not connected.)</div>
 <% } %>

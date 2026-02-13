@@ -4,10 +4,29 @@
   <a href="/users">Users</a>
   <a href="/users/add" class="primary">Add</a>
 </div>
+
+
 <% if (users && users.length) { %>
   <div class="data-list">
-    <ul><% users.forEach(u => { %><li><%= u.username %> (<%= u.accountType %>)</li><% }); %></ul>
+    <table border="1">
+      <tr>
+        <th>UserID</th>
+        <th>Username</th>
+        <th>accountType</th>
+      </tr>
+
+      <% users.forEach(u => { %>
+       <tr>
+        <td> <%= u.userID %> </td>
+        <td> <%= u.usernane %> </td>
+        <td> <%= u.accountType %> </td>
+       </tr>
+  <% }) %>
+
+   </table>
   </div>
+
+
 <% } else { %>
   <div class="empty-state">No users yet. (DB not connected.)</div>
 <% } %>

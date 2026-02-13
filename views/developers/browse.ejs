@@ -4,11 +4,28 @@
   <a href="/developers">Developers</a>
   <a href="/developers/add" class="primary">Add</a>
 </div>
+
+
 <% if (developers && developers.length) { %>
   <div class="data-list">
-    <ul><% developers.forEach(d => { %><li><%= d.developerName %></li><% }); %></ul>
+    <table border="1">
+      <tr>
+        <th>DeveloperID</th>
+        <th>DeveloperName</th>
+      </tr>
+
+      <% developers.forEach(d => { %>
+       <tr>
+        <td> <%= d.developerID %> </td>
+        <td> <%= d.developerName %> </td>
+       </tr>
+  <% }) %>
+
+   </table>
   </div>
+>
 <% } else { %>
   <div class="empty-state">No developers yet. (DB not connected.)</div>
 <% } %>
 <%- include('../partials/footer') %>
+
