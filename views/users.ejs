@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Users</title>
+</head>
+<body>
+
+  <a href="/">Home</a>
+  <h1>Users</h1>
+
+  <hr>
+
+  <h2>Browse Users (SELECT)</h2>
+
+  <% if (typeof users !== 'undefined' && users.length > 0) { %>
+    <table border="1">
+      <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Account Type</th>
+      </tr>
+
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= Users.userID %></td>
+          <td><%= Users.username %></td>
+          <td><%= Users.accountType %></td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } else { %>
+    <p>No users found.</p>
+  <% } %>
+
+  <hr>
+
+  <h2>Add User (INSERT)</h2>
+  <form>
+    <label>Username <input type="text" name="username"></label><br>
+    <label>Account Type <input type="text" name="accountType"></label><br>
+    <button type="submit">Add</button>
+  </form>
+
+  <h2>Update User (UPDATE)</h2>
+  <form>
+    <label>User ID <input type="number" name="userID"></label><br>
+    <label>Username <input type="text" name="username"></label><br>
+    <label>Account Type <input type="text" name="accountType"></label><br>
+    <button type="submit">Update</button>
+  </form>
+
+  <h2>Delete User (DELETE)</h2>
+  <form>
+    <label>User ID <input type="number" name="userID"></label><br>
+    <button type="submit">Delete</button>
+  </form>
+
+</body>
+</html>
