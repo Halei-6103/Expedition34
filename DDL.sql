@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS Reviews;
+DROP TABLE IF EXISTS Purchases;
+DROP TABLE IF EXISTS Games;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Developers;
+
 CREATE TABLE Developers (
     developerID int AUTO_INCREMENT NOT NULL,
     developerName varchar(100) NOT NULL,
@@ -36,8 +42,14 @@ CREATE TABLE Purchases (
 
     PRIMARY KEY (purchaseID),
     UNIQUE(userID, gameID),
-    FOREIGN KEY (userID) REFERENCES Users(userID),
+
+    FOREIGN KEY (userID) REFERENCES Users(userID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
     FOREIGN KEY (gameID) REFERENCES Games(gameID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE Reviews (
@@ -50,10 +62,13 @@ CREATE TABLE Reviews (
 
     PRIMARY KEY (reviewID),
     UNIQUE(userID, gameID),
-    FOREIGN KEY (userID) REFERENCES Users(userID),
-    FOREIGN KEY (gameID) REFERENCES Games(gameID),
-    CHECK (rating BETWEEN 1 AND 5),
-    CHECK (category IN ('bug', 'suggestion', 'general') OR category IS NULL)
+    FOREIGN KEY (userID) REFERENCES Users(userID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+    FOREIGN KEY (gameID) REFERENCES Games(gameID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 
