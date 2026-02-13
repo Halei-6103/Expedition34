@@ -1,22 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CS340 Project</title>
-</head>
-<body>
-
-    <h1>CS340 Project - Step 3</h1>
-
-    <p>Server is running.</p>
-
-    <hr>
-
-    <h2>Pages</h2>
-    <ul>
-        <li><a href="/users">Users</a></li>
-        <li><a href="/games">Games</a></li>
-    </ul>
-
-</body>
-</html>
+<%- include('partials/header', { title: 'Home' }) %>
+<h1>Homepage</h1>
+<p class="subtitle">Select a table to manage:</p>
+<ul class="links">
+  <li><a href="/developers">Developers</a></li>
+  <li><a href="/games">Games</a></li>
+  <li><a href="/users">Users</a></li>
+  <li><a href="/purchases">Purchases</a></li>
+  <li><a href="/reviews">Reviews</a></li>
+</ul>
+<%- include('partials/footer') %>

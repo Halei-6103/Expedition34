@@ -1,0 +1,14 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= title %></h1>
+<div class="toolbar">
+  <a href="/developers">Developers</a>
+  <a href="/developers/add" class="primary">Add</a>
+</div>
+<% if (developers && developers.length) { %>
+  <div class="data-list">
+    <ul><% developers.forEach(d => { %><li><%= d.developerName %></li><% }); %></ul>
+  </div>
+<% } else { %>
+  <div class="empty-state">No developers yet. (DB not connected.)</div>
+<% } %>
+<%- include('../partials/footer') %>
