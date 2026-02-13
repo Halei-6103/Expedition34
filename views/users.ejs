@@ -23,9 +23,9 @@
 
       <% users.forEach(u => { %>
         <tr>
-          <td><%= Users.userID %></td>
-          <td><%= Users.username %></td>
-          <td><%= Users.accountType %></td>
+          <td><%= u.userID %></td>
+          <td><%= u.username %></td>
+          <td><%= u.accountType %></td>
         </tr>
       <% }) %>
     </table>
