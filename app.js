@@ -7,6 +7,8 @@ const express = require('express');  // We are using the express library for the
 const app = express();               // We need to instantiate an express object to interact with the server in our code
 const PORT = process.env.PORT || 56562;     // Set a port number
 
+require('dotenv').config();
+
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true}));
 
