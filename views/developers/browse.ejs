@@ -10,14 +10,16 @@
   <div class="data-list">
     <table border="1">
       <tr>
-        <th>DeveloperID</th>
-        <th>DeveloperName</th>
+        <th>Developers</th>
+        <th>Games</th>
+        <th>Average Rating</th>
       </tr>
 
       <% developers.forEach(d => { %>
        <tr>
-        <td> <%= d.developerID %> </td>
         <td> <%= d.developerName %> </td>
+       <td><%= d.titles ? d.titles : "-" %></td>
+       <td><%= d.avgR ? d.avgR : "-" %> </td>
        </tr>
   <% }) %>
 

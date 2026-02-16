@@ -23,7 +23,7 @@ app.get('/', (req, res) => res.render('index'));
 app.get('/developers', (req, res) => res.render('developers/index'));
 app.get('/developers/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT * FROM Developers;';
+    const query1 = 'SELECT Developers.developerName, GROUP_CONCAT( DISTINCT Games.title SEPARATOR ", ") AS titles, ROUND(AVG(Reviews.rating), 1) AS avgR FROM Developers LEFT JOIN Games ON Developers.developerID = Games.developerID LEFT JOIN Reviews ON Games.gameID = Reviews.gameID GROUP BY Developers.developerID;';
     const [rows] = await db.query(query1);
 
     res.render('developers/browse', {
@@ -43,7 +43,7 @@ app.get('/developers/delete', (req, res) => res.render('developers/delete'));
 app.get('/games', (req, res) => res.render('games/index'));
 app.get('/games/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT * FROM Games;';
+    const query1 = 'SELECT Games.title, Games.price, ROUND(AVG(Reviews.rating),2) AS rating, Games.description, Developers.developerName FROM Games LEFT JOIN Reviews ON Games.gameID=Reviews.gameID LEFT JOIN Developers ON Games.developerID=Developers.developerID GROUP BY Games.title, Games.price, Games.description, Developers.developerName;';
     const [games] = await db.query(query1);
 
     res.render('games/browse', {
@@ -83,7 +83,7 @@ app.get('/users/delete', (req, res) => res.render('users/delete'));
 app.get('/purchases', (req, res) => res.render('purchases/index'));
 app.get('/purchases/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT * FROM Purchases;';
+    const query1 = 'SELECT Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
     const [purchases] = await db.query(query1);
 
     res.render('purchases/browse', {
@@ -103,7 +103,7 @@ app.get('/purchases/delete', (req, res) => res.render('purchases/delete'));
 app.get('/reviews', (req, res) => res.render('reviews/index'));
 app.get('/reviews/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT * FROM Reviews;';
+    const query1 = 'SELECT Users.username, Games.title, Reviews.comment, Reviews.rating, Reviews.category, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate FROM Reviews LEFT JOIN Users ON Users.userID = Reviews.userID LEFT JOIN Games ON Games.gameID = Reviews.gameID ORDER BY reviewDate ASC;';
     const [reviews] = await db.query(query1);
 
     res.render('reviews/browse', {

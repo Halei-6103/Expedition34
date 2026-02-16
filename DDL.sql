@@ -26,7 +26,7 @@ CREATE TABLE Games (
     developerID int NOT NULL,
     price decimal(8,2) NOT NULL,
     title varchar(150) NOT NULL,
-    description varchar(1000) NOT NULL,
+    description text NOT NULL,
 
     PRIMARY KEY (gameID),
     FOREIGN KEY (developerID) REFERENCES Developers(developerID),
@@ -59,6 +59,7 @@ CREATE TABLE Reviews (
     rating int NOT NULL,
     comment varchar(300) NULL,
     category varchar(20) NULL,
+    reviewDate DATE NOT NULL,
 
     PRIMARY KEY (reviewID),
     UNIQUE(userID, gameID),
@@ -77,16 +78,17 @@ CREATE TABLE Reviews (
 -- ----------------------------
 
 INSERT INTO Users (username, accountType) VALUES
-('jade', 'user'),
-('ian',  'user'),
+('Jade', 'user'),
+('Ian',  'user'),
 ('Jack', 'user'),
-('guest_user', 'user'), -- zero purchases & zero reviews
-('alex', 'user');       -- purchases but no reviews
+('Guest_user', 'user'), -- zero purchases & zero reviews
+('Alex', 'user');       -- purchases but no reviews
 
 INSERT INTO Developers (developerName) VALUES
 ('PNW Game Studios'),
 ('Waterfall Interactive'),
-('Cascade Pixel Works');
+('Cascade Pixel Works'),
+('Valve');
 
 -- Used AI to generate game names and descriptions
 INSERT INTO Games (developerID, title, price, description) VALUES
@@ -114,14 +116,14 @@ INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES
 -- ----------------------------
 -- Reviews (1:M Users -> Reviews, 1:M Games -> Reviews)
 -- ----------------------------
-INSERT INTO Reviews (userID, gameID, rating, comment, category) VALUES
-(1, 1, 5, 'Loved the combat system!', 'general'),
-(1, 2, 3, NULL, 'general'),
-(1, 4, 4, 'Challenging but fun.', 'general'),
+INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALUES
+(1, 1, 5, 'Loved the combat system!', 'general', '2026-01-03'),
+(1, 2, 3, NULL, 'general', '2026-01-05'),
+(1, 4, 4, 'Challenging but fun.', 'general', '2026-01-08'),
 
-(2, 1, 4, 'Great, but needs balancing.', 'bug'),
-(2, 3, 5, 'Super relaxing experience.', 'general'),
+(2, 1, 4, 'Great, but needs balancing.', 'bug', '2026-01-10'),
+(2, 3, 5, 'Super relaxing experience.', 'general', '2026-01-12'),
 
-(3, 3, 2, 'Too repetitive for me.', 'general'),
-(3, 1, 4, 'Solid mechanics overall.', 'general'),
-(5, 1, 4, 'Good idea but could be improved by doing (example)', 'suggestion');
+(3, 3, 2, 'Too repetitive for me.', 'general', '2026-01-15'),
+(3, 1, 4, 'Solid mechanics overall.', 'general', '2026-01-18'),
+(5, 1, 4, 'Good idea but could be improved by doing (example)', 'suggestion', '2026-01-22');

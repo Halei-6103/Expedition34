@@ -8,22 +8,22 @@
   <div class="data-list">
     <table border="1">
       <tr>
-        <th>ReviewID</th>
-        <th>UserID</th>
-        <th>GameID</th>
-        <th>Rating</th>
+        <th>Username</th>
+        <th>Game</th>
         <th>Comment</th>
+        <th>Rating</th>
         <th>Category</th>
+        <th>Date</th>
       </tr>
 
       <% reviews.forEach(r => { %>
        <tr>
-        <td> <%= r.reviewID %> </td>
-        <td> <%= r.userID %> </td>
-        <td> <%= r.gameID %> </td>
+        <td> <%= r.username %> </td>
+        <td> <%= r.title %> </td>
+        <td><%= r.comment ? r.comment : "------------" %> </td>
         <td> <%= r.rating %> </td>
-        <td> <%= r.comment %> </td>
         <td> <%= r.category %> </td>
+        <td> <%= r.reviewDate %> </td>
        </tr>
   <% }) %>
 

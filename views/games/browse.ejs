@@ -8,20 +8,20 @@
   <div class="data-list">
     <table border="1">
       <tr>
-        <th>GameID</th>
-        <th>DeveloperID</th>
-        <th>Price</th>
         <th>Title</th>
-        <th>description</th>
+        <th>Price</th>
+        <th>Ratings</th>
+        <th>Description</th>
+        <th>Made By</th>
       </tr>
 
       <% games.forEach(g => { %>
        <tr>
-        <td> <%= g.gameID %> </td>
-        <td> <%= g.developerID %> </td>
-        <td> <%= g.price %> </td>
         <td> <%= g.title %> </td>
+        <td> <%= g.price %> USD </td>
+        <td> <%= g.rating %>/5 </td>
         <td> <%= g.description %> </td>
+        <TD> <%= g.developerName %> </TD>
        </tr>
   <% }) %>
 

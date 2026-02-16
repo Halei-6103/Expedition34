@@ -9,20 +9,18 @@
   <div class="data-list">
     <table border="1">
       <tr>
-        <th>PurchaseID</th>
-        <th>User ID</th>
-        <th>Game ID</th>
-        <th>Date</th>
+        <th>Username</th>
+        <th>Game</th>
+        <th>Date (PST)</th>
         <th>Price</th>
       </tr>
 
       <% purchases.forEach(p => { %>
        <tr>
-        <td> <%= p.purchaseID %> </td>
-        <td> <%= p.userID %> </td>
-        <td> <%= p.gameID %> </td>
+        <td> <%= p.username %> </td>
+        <td> <%= p.title %> </td>
         <td> <%= p.purchaseDate %> </td>
-        <td> <%= p.purchasePrice %> </td>
+        <td> <%= p.purchasePrice %> USD </td>
        </tr>
   <% }) %>
 
