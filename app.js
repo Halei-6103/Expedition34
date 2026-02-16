@@ -36,9 +36,52 @@ app.get('/developers/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/developers/add', (req, res) => res.render('developers/add', { title: 'Add Developer' }));
+app.get('/developers/add', (req, res) => {
+   res.render('developers/add', {
+      title: 'Add Developers'
+    });
+})
+app.post('/developers/add', async function (req, res) {
+  const developerName = req.body.developerName;
+  const query = 'INSERT INTO Developers (developerName) VALUES (?)';
+
+  try {
+    await db.query(query, [developerName]);
+    res.redirect('/developers/browse');
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+});
 app.get('/developers/update', (req, res) => res.render('developers/update'));
-app.get('/developers/delete', (req, res) => res.render('developers/delete'));
+
+app.get('/developers/delete', async function (req, res) {
+  try {
+  const getNames = 'SELECT Developers.developerID, Developers.developerName FROM Developers;'
+  const [developerNames] = await db.query(getNames)
+
+
+  res.render('developers/delete', {
+    developers: developerNames
+  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+});
+app.post('/developers/delete', async function (req, res) {
+  const developerName = req.body.developerName;
+  const query = 'DELETE FROM Developers WHERE developerID=?';
+
+  try {
+    await db.query(query, [developerName]);
+    res.redirect('/developers/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 
 app.get('/games', (req, res) => res.render('games/index'));
 app.get('/games/browse', async function (req, res) {

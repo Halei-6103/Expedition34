@@ -29,7 +29,9 @@ CREATE TABLE Games (
     description text NOT NULL,
 
     PRIMARY KEY (gameID),
-    FOREIGN KEY (developerID) REFERENCES Developers(developerID),
+    FOREIGN KEY (developerID) REFERENCES Developers(developerID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     UNIQUE (title)
 );
 
@@ -47,7 +49,7 @@ CREATE TABLE Purchases (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
 
-    FOREIGN KEY (gameID) REFERENCES Games(gameID)
+    FOREIGN KEY (gameID) REFERENCES Games(gameID) 
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

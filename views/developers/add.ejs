@@ -1,5 +1,11 @@
 <%- include('../partials/header', { title }) %>
 <h1><%= title %></h1>
+<div class="toolbar">
+  <a href="/developers">Developers</a>
+  <a href="/developers/delete" class="primary">Delete</a>
+  <a href="/developers/browse" class="primary">Browse</a>
+</div>
+
 <form action="/developers/add" method="post">
   <label>Developer name <input type="text" name="developerName" required placeholder="e.g. PNW Game Studios" /></label>
   <button type="submit">Add developer</button>
