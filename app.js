@@ -99,9 +99,68 @@ app.get('/games/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/games/add', (req, res) => res.render('games/add', { title: 'Add Game', developers: [] }));
+
+
+app.get('/games/add', async function (req, res) {
+  try {
+
+    const getDevelopers = 'Select * FROM Developers;'
+    const [developers] = await db.query(getDevelopers);
+
+    res.render('games/add', {
+      title: "Add Games",
+      developers: developers
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/games/add', async function (req, res) {
+  const developerID = req.body.developers; 
+  const price = req.body.gamePrice;
+  const title = req.body.gameTitle;
+  const description = req.body.gameDescription;
+
+  try {
+    const query = 'INSERT INTO Games (developerID, title, price, description) VALUES (?, ?, ?, ?)';
+    await db.query(query, [developerID, title, price, description]);
+    return res.redirect('/games/browse');
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Database Error");
+  }
+});
+
+
 app.get('/games/update', (req, res) => res.render('games/update'));
-app.get('/games/delete', (req, res) => res.render('games/delete'));
+app.get('/games/delete', async function (req, res){
+  try {
+    const getGames = 'SELECT Games.gameID, Games.title FROM Games;'
+    const [games] = await db.query(getGames);
+
+    res.render('games/delete', {
+      titles: games
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+})
+app.post('/games/delete', async function (req, res){
+  const gameID = req.body.titles;
+  try {
+    const query = 'DELETE FROM Games WHERE Games.gameID=?'
+    await db.query(query, [gameID]);
+
+    res.redirect('/games/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
 
 app.get('/users', (req, res) => res.render('users/index'));
 app.get('/users/browse', async function (req, res) {
