@@ -224,7 +224,7 @@ app.post('/users/delete', async function (req, res) {
 app.get('/purchases', (req, res) => res.render('purchases/index'));
 app.get('/purchases/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
+    const query1 = 'SELECT Purchases.purchaseID, Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
     const [purchases] = await db.query(query1);
 
     res.render('purchases/browse', {
@@ -237,9 +237,71 @@ app.get('/purchases/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/purchases/add', (req, res) => res.render('purchases/add', { title: 'Add Purchase', users: [], games: [] }));
+app.get('/purchases/add', async function (req, res) {
+  try {
+
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const [users] = await db.query(getUsers);
+
+    const getGames = 'SELECT gameID, title, price FROM Games;';
+    const [games] = await db.query(getGames);
+
+    res.render('purchases/add', {
+      title: "Add a Purchase",
+      users: users,
+      games: games
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/purchases/add', async function (req,res) {
+  const userID = req.body.userID;
+  const gameID = req.body.gameID;
+  const purchaseDate = req.body.purchaseDate;
+  const purchasePrice = req.body.purchasePrice;
+
+  try {
+    const query =  'INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES (?, ?, ?, ?)';
+
+    await db.query(query, [userID, gameID, purchaseDate, purchasePrice]);
+    res.redirect('/purchases/browse')
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
 app.get('/purchases/update', (req, res) => res.render('purchases/update'));
-app.get('/purchases/delete', (req, res) => res.render('purchases/delete'));
+app.get('/purchases/delete', async function (req, res) {
+  try {
+    const findPurchaseID = 'SELECT Purchases.purchaseID FROM Purchases ORDER BY purchaseID ASC;'
+
+    const [purchaseID] = await db.query(findPurchaseID);
+
+    res.render('purchases/delete', {
+      purchases: purchaseID
+    });
+
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+app.post('/purchases/delete', async function (req, res) {
+  const getPurchaseID = req.body.deletePurchases
+  try {
+    const deleteQuery = 'DELETE FROM Purchases WHERE Purchases.purchaseID=?';
+
+    await db.query(deleteQuery, [getPurchaseID]);
+    res.redirect('/purchases/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 
 app.get('/reviews', (req, res) => res.render('reviews/index'));
 app.get('/reviews/browse', async function (req, res) {
