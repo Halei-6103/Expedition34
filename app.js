@@ -150,7 +150,7 @@ app.get('/games/delete', async function (req, res){
   }
 })
 app.post('/games/delete', async function (req, res){
-  const gameID = req.body.titles;
+  const gameID = req.body.gameID;
   try {
     const query = 'DELETE FROM Games WHERE Games.gameID=?'
     await db.query(query, [gameID]);
@@ -179,9 +179,48 @@ app.get('/users/browse', async function (req, res) {
   }
 });
 app.get('/users/add', (req, res) => res.render('users/add', { title: 'Add User' }));
-app.get('/users/update', (req, res) => res.render('users/update'));
-app.get('/users/delete', (req, res) => res.render('users/delete'));
 
+app.post('/users/add', async function (req, res) {
+    try {
+    const username = req.body.username;
+    const accountType = req.body.accountType;
+
+    const query1 = 'INSERT INTO Users (username, accountType) VALUES (?,?);'
+    await db.query(query1, [username, accountType]);
+
+    return res.redirect('/users/browse');
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.get('/users/update', (req, res) => res.render('users/update'));
+app.get('/users/delete', async function (req, res) {
+
+  const query = 'SELECT userID, username, accountType FROM Users'
+  const [getUsers] = await db.query(query);
+
+  return res.render('users/delete', {
+    users: getUsers
+  });
+});
+
+app.post('/users/delete', async function (req, res) {
+
+  try{
+
+    const userID = req.body.deleteUser;
+    const query = 'DELETE FROM Users WHERE userID=?;'
+
+    await db.query(query, [userID]);
+
+  res.redirect('/users/browse');
+  } catch(error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 app.get('/purchases', (req, res) => res.render('purchases/index'));
 app.get('/purchases/browse', async function (req, res) {
   try {
