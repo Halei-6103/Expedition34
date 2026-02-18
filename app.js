@@ -101,7 +101,31 @@ app.get('/games/browse', async function (req, res) {
 });
 app.get('/games/add', (req, res) => res.render('games/add', { title: 'Add Game', developers: [] }));
 app.get('/games/update', (req, res) => res.render('games/update'));
-app.get('/games/delete', (req, res) => res.render('games/delete'));
+app.get('/games/delete', async function (req, res){
+  try {
+    const query1 = 'SELECT Games.gamesID, Games.title FROM Games;'
+    const titles = await db.query(query1);
+
+    res.render('games/delete', {
+      titles: titles
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+})
+app.post('/games/delete', async function (req, res){
+  const gameID = req.body.gameID;
+  try {
+    const query = 'DELETE FROM Games WHERE Games.gameid=?'
+    await db.query(query, [gameID]);
+
+    res.redirect('games/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
 
 app.get('/users', (req, res) => res.render('users/index'));
 app.get('/users/browse', async function (req, res) {
