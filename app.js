@@ -319,15 +319,82 @@ app.get('/reviews/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/reviews/add', (req, res) => res.render('reviews/add', { title: 'Add Review', users: [], games: [] }));
-app.get('/reviews/update', (req, res) => res.render('reviews/update'));
-app.get('/reviews/delete', (req, res) => res.render('reviews/delete'));
+app.get('/reviews/add', async function (req, res) {
+  try {
+    const getUser = 'SELECT userID, username FROM Users;'
+    const getGame = 'SELECT gameID, title FROM Games;'
 
-app.post('/developers/add', (req, res) => res.redirect('/developers'));
-app.post('/games/add', (req, res) => res.redirect('/games'));
-app.post('/users/add', (req, res) => res.redirect('/users'));
-app.post('/purchases/add', (req, res) => res.redirect('/purchases'));
-app.post('/reviews/add', (req, res) => res.redirect('/reviews'));
+    const [users] = await db.query(getUser);
+    const [games] = await db.query(getGame);
+
+    res.render("reviews/add", {
+      title: "Post a Review",
+      users: users,
+      games: games
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/reviews/add', async function (req, res) {
+    const userID = req.body.userID;
+    const gameID = req.body.gameID;
+    const rating = req.body.rating;
+    const comment = req.body.comment;
+    const category = req.body.category;
+    
+    try {
+      const query = 'INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALUES (?, ?, ?, ?, ?, CURDATE() )';
+
+      await db.query(query, [userID, gameID, rating, comment, category]);
+      res.redirect('/reviews/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.get('/reviews/update', (req, res) => res.render('reviews/update'));
+app.get('/reviews/delete', async function (req, res) {
+  try {
+    const query = 'SELECT reviewID, Users.username, Games.title, Reviews.rating, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate FROM Reviews LEFT JOIN Users ON Reviews.userID = Users.userID LEFT JOIN Games ON Reviews.gameID = Games.gameID;';
+
+    const [ratings] = await db.query(query);
+
+    res.render('reviews/delete', {
+      reviews: ratings
+    });
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+app.post('/reviews/delete', async function (req, res) {
+  const reviewID = req.body.reviewID;
+
+  try {
+
+    const query = 'DELETE FROM Reviews where reviewID=?;';
+
+    await db.query(query, [reviewID]);
+    res.redirect('/reviews/browse');
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+
+
+
+
+
+
+
+
+
+
 
 /*
     LISTENER
