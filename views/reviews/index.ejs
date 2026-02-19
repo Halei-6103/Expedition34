@@ -1,10 +1,32 @@
 <%- include('../partials/header', { title: 'Reviews' }) %>
-<h1>Reviews</h1>
-<p class="subtitle">Browse, add, update, or delete game reviews.</p>
-<ul class="links">
-  <li><a href="/reviews/browse">Browse</a></li>
-  <li><a href="/reviews/add">Add</a></li>
-  <li><a href="/reviews/update">Update</a></li>
-  <li><a href="/reviews/delete">Delete</a></li>
+<header class="action-page__header">
+  <h1>Reviews</h1>
+  <p class="subtitle">Browse, add, update, or delete game reviews.</p>
+</header>
+<ul class="action-grid" role="list">
+  <li>
+    <a href="/reviews/browse" class="action-card">
+      <span class="action-card__title">Browse</span>
+      <p class="action-card__desc">View all reviews</p>
+    </a>
+  </li>
+  <li>
+    <a href="/reviews/add" class="action-card">
+      <span class="action-card__title">Add</span>
+      <p class="action-card__desc">Write a new review</p>
+    </a>
+  </li>
+  <li>
+    <a href="/reviews/update" class="action-card">
+      <span class="action-card__title">Update</span>
+      <p class="action-card__desc">Edit an existing review</p>
+    </a>
+  </li>
+  <li>
+    <a href="/reviews/delete" class="action-card">
+      <span class="action-card__title">Delete</span>
+      <p class="action-card__desc">Remove a review</p>
+    </a>
+  </li>
 </ul>
 <%- include('../partials/footer') %>

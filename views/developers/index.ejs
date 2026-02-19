@@ -1,10 +1,32 @@
 <%- include('../partials/header', { title: 'Developers' }) %>
-<h1>Developers</h1>
-<p class="subtitle">Browse, add, update, or delete developer records.</p>
-<ul class="links">
-  <li><a href="/developers/browse">Browse</a></li>
-  <li><a href="/developers/add">Add</a></li>
-  <li><a href="/developers/update">Update</a></li>
-  <li><a href="/developers/delete">Delete</a></li>
+<header class="action-page__header">
+  <h1>Developers</h1>
+  <p class="subtitle">Browse, add, update, or delete developer records.</p>
+</header>
+<ul class="action-grid" role="list">
+  <li>
+    <a href="/developers/browse" class="action-card">
+      <span class="action-card__title">Browse</span>
+      <p class="action-card__desc">View all developers</p>
+    </a>
+  </li>
+  <li>
+    <a href="/developers/add" class="action-card">
+      <span class="action-card__title">Add</span>
+      <p class="action-card__desc">Create a new developer</p>
+    </a>
+  </li>
+  <li>
+    <a href="/developers/update" class="action-card">
+      <span class="action-card__title">Update</span>
+      <p class="action-card__desc">Edit an existing developer</p>
+    </a>
+  </li>
+  <li>
+    <a href="/developers/delete" class="action-card">
+      <span class="action-card__title">Delete</span>
+      <p class="action-card__desc">Remove a developer</p>
+    </a>
+  </li>
 </ul>
 <%- include('../partials/footer') %>
