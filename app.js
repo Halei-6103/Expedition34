@@ -195,7 +195,34 @@ app.post('/users/add', async function (req, res) {
   }
 });
 
-app.get('/users/update', (req, res) => res.render('users/update'));
+app.get('/users/update', async function (req, res) {
+  try {
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const [users] = await db.query(getUsers);
+
+    res.render('users/update', {
+      users: users
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/users/update', async function (req, res) {
+  const userID = req.body.chooseUser;
+  const usernameChange = req.body.usernameChange;
+  const accountType = req.body.accountType;
+
+  try {
+    const query = 'UPDATE Users SET Users.username=?, Users.accountType=? WHERE userID=?;';
+    await db.query(query, [usernameChange, accountType, userID]);
+    res.redirect('/users/browse');
+  } catch(error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
 app.get('/users/delete', async function (req, res) {
 
   const query = 'SELECT userID, username, accountType FROM Users'
