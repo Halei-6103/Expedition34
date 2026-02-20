@@ -54,7 +54,37 @@ app.post('/developers/add', async function (req, res) {
     res.status(500).send('Database Error');
   }
 });
-app.get('/developers/update', (req, res) => res.render('developers/update'));
+app.get('/developers/update', async function (req, res){
+  try {
+    const getDevelopers = 'SELECT * FROM Developers;';
+
+    const [developers] = await db.query(getDevelopers);
+
+    res.render('developers/update', {
+      developers: developers
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+})
+
+app.post ('/developers/update', async function (req, res) {
+  try {
+    const getDevID = req.body.chooseDev;
+    const getNewDevName = req.body.developerChange;
+
+    const query = 'UPDATE Developers SET developerName=? WHERE developerID=?'
+
+    await db.query(query, [getNewDevName, getDevID]);
+
+    res.redirect('/developers/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+});
 
 app.get('/developers/delete', async function (req, res) {
   try {
@@ -329,7 +359,46 @@ app.post('/purchases/add', async function (req,res) {
   }
 });
 
-app.get('/purchases/update', (req, res) => res.render('purchases/update'));
+app.get('/purchases/update', async function (req, res) {
+  try {
+    const getPurchases = 'SELECT purchaseID FROM Purchases';
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const getGames = 'SELECT gameID, title FROM Games;';
+
+    const [purchases] = await db.query(getPurchases);
+    const [users] = await db.query(getUsers);
+    const [games] = await db.query(getGames);
+
+    res.render("purchases/update", {
+      purchases: purchases,
+      users: users,
+      games: games
+    })
+
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+
+app.post('/purchases/update', async function (req, res) {
+  const getPurchaseID = req.body.choosePurchase;
+  const getUserID = req.body.newUserID;
+  const getGameID = req.body.newGameID;
+
+  const getPrice = req.body.newPrice;
+  const newPurchaseDate = req.body.newDate;
+
+  try {
+    const query = 'UPDATE FROM SET Purchases userID=?, gameID=?, purchasePrice=?, purchaseDate=? WHERE purchaseID=?'
+
+    await db.query(query, [getUserID, getGameID, getPrice, newPurchaseDate, getPurchaseID]);
+    res.redirect('/purchases/browse');
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 app.get('/purchases/delete', async function (req, res) {
   try {
     const findPurchaseID = 'SELECT Purchases.purchaseID FROM Purchases ORDER BY purchaseID ASC;'
