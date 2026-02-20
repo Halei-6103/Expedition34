@@ -446,7 +446,7 @@ app.post('/purchases/update', async function (req, res) {
   const newPurchaseDate = req.body.newDate;
 
   try {
-    const query = 'UPDATE FROM SET Purchases userID=?, gameID=?, purchasePrice=?, purchaseDate=? WHERE purchaseID=?'
+    const query = 'UPDATE Puchases SET Purchases userID=?, gameID=?, purchasePrice=?, purchaseDate=? WHERE purchaseID=?'
 
     await db.query(query, [getUserID, getGameID, getPrice, newPurchaseDate, getPurchaseID]);
     res.redirect('/purchases/browse');
