@@ -1,5 +1,31 @@
 <%- include('../partials/header', { title: 'Update Game' }) %>
 <h1>Update game</h1>
 <p class="subtitle">Select a game to edit. (Form coming when DB is connected.)</p>
+<form action="/games/update" method="post">
+
+    <label>Choose A Game to Edit</label>
+
+    <%  if( games && games.length) { %>
+        <select name="chooseGame">
+            <% games.forEach(g => { %>
+                <option value=<%= g.gameID %>> <%= g.title %> </option>
+          <%  }) %>
+        </select>
+        <br>
+        <label>Edit Game's Title</label>
+        <input type="text" name="titleChange"> <br>
+
+        <label>New Price
+        <input type="number" name="newPrice" step="0.01" min="0" required placeholder="0.00" />
+        </label>
+
+        <label>New Descrption
+        <textarea name="newDescription" rows="4" required placeholder="Short description"></textarea>
+        </label>
+        </select>
+    <% } %>
+    <br>
+    <button type="submit">Confirm Edits</button>
+</form>
 <a href="/games" class="back-link">← Back to Games</a>
 <%- include('../partials/footer') %>

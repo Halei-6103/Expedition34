@@ -135,7 +135,35 @@ app.post('/games/add', async function (req, res) {
 });
 
 
-app.get('/games/update', (req, res) => res.render('games/update'));
+app.get('/games/update', async function (req, res) {
+
+  try {
+    const getGame = 'SELECT gameID, title FROM Games;';
+    const [games] = await db.query(getGame);
+    res.render('games/update', {
+      games: games
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+
+app.post('/games/update', async function (req,res) {
+  const getGameID = req.body.chooseGame;
+  const gameTitle = req.body.titleChange;
+  const newPrice = req.body.newPrice;
+  const newDesc = req.body.newDescription;
+
+  try {
+    const query = 'UPDATE Games SET title=?, price=?, description=? WHERE gameID=?'
+    await db.query(query, [gameTitle, newPrice, newDesc, getGameID]);
+    res.redirect('/games/update')
+  }catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+})
 app.get('/games/delete', async function (req, res){
   try {
     const getGames = 'SELECT Games.gameID, Games.title FROM Games;'
