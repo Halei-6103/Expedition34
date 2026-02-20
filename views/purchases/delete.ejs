@@ -1,5 +1,23 @@
 <%- include('../partials/header', { title: 'Delete Purchase' }) %>
 <h1>Delete purchase</h1>
-<p class="subtitle">Select a purchase to remove. (Form coming when DB is connected.)</p>
+<div class="toolbar">
+  <a href="/purchases">Purchases</a>
+  <a href="/purchases/add" class="primary">Add</a>
+  <a href="/purchases/browse" class="primary">Browse</a>
+</div>
+<p class="subtitle">Select a purchase to remove.</p>
+
+<form action="/purchases/delete" method="post">
+    <label> Purchase ID </label>
+        <%  if( purchases && purchases.length) { %>
+        <select name="deletePurchases">
+
+       <% purchases.forEach(p => { %>
+        <option value=<%= p.purchaseID %>> <%= p.purchaseID %> </option>
+        <% }) %>
+      <%  } %>
+    </select> <br>
+    <button type="submit">Remove Purchase</button>
+</form>
 <a href="/purchases" class="back-link">← Back to Purchases</a>
 <%- include('../partials/footer') %>

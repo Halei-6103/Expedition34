@@ -54,7 +54,37 @@ app.post('/developers/add', async function (req, res) {
     res.status(500).send('Database Error');
   }
 });
-app.get('/developers/update', (req, res) => res.render('developers/update'));
+app.get('/developers/update', async function (req, res){
+  try {
+    const getDevelopers = 'SELECT * FROM Developers;';
+
+    const [developers] = await db.query(getDevelopers);
+
+    res.render('developers/update', {
+      developers: developers
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+})
+
+app.post ('/developers/update', async function (req, res) {
+  try {
+    const getDevID = req.body.chooseDev;
+    const getNewDevName = req.body.developerChange;
+
+    const query = 'UPDATE Developers SET developerName=? WHERE developerID=?'
+
+    await db.query(query, [getNewDevName, getDevID]);
+
+    res.redirect('/developers/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database Error');
+  }
+});
 
 app.get('/developers/delete', async function (req, res) {
   try {
@@ -99,15 +129,78 @@ app.get('/games/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/games/add', (req, res) => res.render('games/add', { title: 'Add Game', developers: [] }));
-app.get('/games/update', (req, res) => res.render('games/update'));
+
+
+app.get('/games/add', async function (req, res) {
+  try {
+
+    const getDevelopers = 'Select * FROM Developers;'
+    const [developers] = await db.query(getDevelopers);
+
+    res.render('games/add', {
+      title: "Add Games",
+      developers: developers
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/games/add', async function (req, res) {
+  const developerID = req.body.developers; 
+  const price = req.body.gamePrice;
+  const title = req.body.gameTitle;
+  const description = req.body.gameDescription;
+
+  try {
+    const query = 'INSERT INTO Games (developerID, title, price, description) VALUES (?, ?, ?, ?)';
+    await db.query(query, [developerID, title, price, description]);
+    return res.redirect('/games/browse');
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Database Error");
+  }
+});
+
+
+app.get('/games/update', async function (req, res) {
+
+  try {
+    const getGame = 'SELECT gameID, title FROM Games;';
+    const [games] = await db.query(getGame);
+    res.render('games/update', {
+      games: games
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+
+app.post('/games/update', async function (req,res) {
+  const getGameID = req.body.chooseGame;
+  const gameTitle = req.body.titleChange;
+  const newPrice = req.body.newPrice;
+  const newDesc = req.body.newDescription;
+
+  try {
+    const query = 'UPDATE Games SET title=?, price=?, description=? WHERE gameID=?'
+    await db.query(query, [gameTitle, newPrice, newDesc, getGameID]);
+    res.redirect('/games/update')
+  }catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+})
 app.get('/games/delete', async function (req, res){
   try {
-    const query1 = 'SELECT Games.gamesID, Games.title FROM Games;'
-    const titles = await db.query(query1);
+    const getGames = 'SELECT Games.gameID, Games.title FROM Games;'
+    const [games] = await db.query(getGames);
 
     res.render('games/delete', {
-      titles: titles
+      titles: games
     });
   } catch (error) {
     console.error(error);
@@ -117,10 +210,10 @@ app.get('/games/delete', async function (req, res){
 app.post('/games/delete', async function (req, res){
   const gameID = req.body.gameID;
   try {
-    const query = 'DELETE FROM Games WHERE Games.gameid=?'
+    const query = 'DELETE FROM Games WHERE Games.gameID=?'
     await db.query(query, [gameID]);
 
-    res.redirect('games/browse');
+    res.redirect('/games/browse');
   } catch (error) {
     console.error(error);
     res.status(500).send('Database error');
@@ -144,13 +237,79 @@ app.get('/users/browse', async function (req, res) {
   }
 });
 app.get('/users/add', (req, res) => res.render('users/add', { title: 'Add User' }));
-app.get('/users/update', (req, res) => res.render('users/update'));
-app.get('/users/delete', (req, res) => res.render('users/delete'));
 
+app.post('/users/add', async function (req, res) {
+    try {
+    const username = req.body.username;
+    const accountType = req.body.accountType;
+
+    const query1 = 'INSERT INTO Users (username, accountType) VALUES (?,?);'
+    await db.query(query1, [username, accountType]);
+
+    return res.redirect('/users/browse');
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.get('/users/update', async function (req, res) {
+  try {
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const [users] = await db.query(getUsers);
+
+    res.render('users/update', {
+      users: users
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/users/update', async function (req, res) {
+  const userID = req.body.chooseUser;
+  const usernameChange = req.body.usernameChange;
+  const accountType = req.body.accountType;
+
+  try {
+    const query = 'UPDATE Users SET Users.username=?, Users.accountType=? WHERE userID=?;';
+    await db.query(query, [usernameChange, accountType, userID]);
+    res.redirect('/users/browse');
+  } catch(error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+app.get('/users/delete', async function (req, res) {
+
+  const query = 'SELECT userID, username, accountType FROM Users'
+  const [getUsers] = await db.query(query);
+
+  return res.render('users/delete', {
+    users: getUsers
+  });
+});
+
+app.post('/users/delete', async function (req, res) {
+
+  try{
+
+    const userID = req.body.deleteUser;
+    const query = 'DELETE FROM Users WHERE userID=?;'
+
+    await db.query(query, [userID]);
+
+  res.redirect('/users/browse');
+  } catch(error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 app.get('/purchases', (req, res) => res.render('purchases/index'));
 app.get('/purchases/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
+    const query1 = 'SELECT Purchases.purchaseID, Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
     const [purchases] = await db.query(query1);
 
     res.render('purchases/browse', {
@@ -163,9 +322,110 @@ app.get('/purchases/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/purchases/add', (req, res) => res.render('purchases/add', { title: 'Add Purchase', users: [], games: [] }));
-app.get('/purchases/update', (req, res) => res.render('purchases/update'));
-app.get('/purchases/delete', (req, res) => res.render('purchases/delete'));
+app.get('/purchases/add', async function (req, res) {
+  try {
+
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const [users] = await db.query(getUsers);
+
+    const getGames = 'SELECT gameID, title, price FROM Games;';
+    const [games] = await db.query(getGames);
+
+    res.render('purchases/add', {
+      title: "Add a Purchase",
+      users: users,
+      games: games
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/purchases/add', async function (req,res) {
+  const userID = req.body.userID;
+  const gameID = req.body.gameID;
+  const purchaseDate = req.body.purchaseDate;
+  const purchasePrice = req.body.purchasePrice;
+
+  try {
+    const query =  'INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES (?, ?, ?, ?)';
+
+    await db.query(query, [userID, gameID, purchaseDate, purchasePrice]);
+    res.redirect('/purchases/browse')
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.get('/purchases/update', async function (req, res) {
+  try {
+    const getPurchases = 'SELECT purchaseID FROM Purchases';
+    const getUsers = 'SELECT userID, username FROM Users;';
+    const getGames = 'SELECT gameID, title FROM Games;';
+
+    const [purchases] = await db.query(getPurchases);
+    const [users] = await db.query(getUsers);
+    const [games] = await db.query(getGames);
+
+    res.render("purchases/update", {
+      purchases: purchases,
+      users: users,
+      games: games
+    })
+
+  } catch(error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+
+app.post('/purchases/update', async function (req, res) {
+  const getPurchaseID = req.body.choosePurchase;
+  const getUserID = req.body.newUserID;
+  const getGameID = req.body.newGameID;
+
+  const getPrice = req.body.newPrice;
+  const newPurchaseDate = req.body.newDate;
+
+  try {
+    const query = 'UPDATE FROM SET Purchases userID=?, gameID=?, purchasePrice=?, purchaseDate=? WHERE purchaseID=?'
+
+    await db.query(query, [getUserID, getGameID, getPrice, newPurchaseDate, getPurchaseID]);
+    res.redirect('/purchases/browse');
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+app.get('/purchases/delete', async function (req, res) {
+  try {
+    const findPurchaseID = 'SELECT Purchases.purchaseID FROM Purchases ORDER BY purchaseID ASC;'
+
+    const [purchaseID] = await db.query(findPurchaseID);
+
+    res.render('purchases/delete', {
+      purchases: purchaseID
+    });
+
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+app.post('/purchases/delete', async function (req, res) {
+  const getPurchaseID = req.body.deletePurchases
+  try {
+    const deleteQuery = 'DELETE FROM Purchases WHERE Purchases.purchaseID=?';
+
+    await db.query(deleteQuery, [getPurchaseID]);
+    res.redirect('/purchases/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
 
 app.get('/reviews', (req, res) => res.render('reviews/index'));
 app.get('/reviews/browse', async function (req, res) {
@@ -183,15 +443,82 @@ app.get('/reviews/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
-app.get('/reviews/add', (req, res) => res.render('reviews/add', { title: 'Add Review', users: [], games: [] }));
-app.get('/reviews/update', (req, res) => res.render('reviews/update'));
-app.get('/reviews/delete', (req, res) => res.render('reviews/delete'));
+app.get('/reviews/add', async function (req, res) {
+  try {
+    const getUser = 'SELECT userID, username FROM Users;'
+    const getGame = 'SELECT gameID, title FROM Games;'
 
-app.post('/developers/add', (req, res) => res.redirect('/developers'));
-app.post('/games/add', (req, res) => res.redirect('/games'));
-app.post('/users/add', (req, res) => res.redirect('/users'));
-app.post('/purchases/add', (req, res) => res.redirect('/purchases'));
-app.post('/reviews/add', (req, res) => res.redirect('/reviews'));
+    const [users] = await db.query(getUser);
+    const [games] = await db.query(getGame);
+
+    res.render("reviews/add", {
+      title: "Post a Review",
+      users: users,
+      games: games
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.post('/reviews/add', async function (req, res) {
+    const userID = req.body.userID;
+    const gameID = req.body.gameID;
+    const rating = req.body.rating;
+    const comment = req.body.comment;
+    const category = req.body.category;
+    
+    try {
+      const query = 'INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALUES (?, ?, ?, ?, ?, CURDATE() )';
+
+      await db.query(query, [userID, gameID, rating, comment, category]);
+      res.redirect('/reviews/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+});
+
+app.get('/reviews/update', (req, res) => res.render('reviews/update'));
+app.get('/reviews/delete', async function (req, res) {
+  try {
+    const query = 'SELECT reviewID, Users.username, Games.title, Reviews.rating, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate FROM Reviews LEFT JOIN Users ON Reviews.userID = Users.userID LEFT JOIN Games ON Reviews.gameID = Games.gameID;';
+
+    const [ratings] = await db.query(query);
+
+    res.render('reviews/delete', {
+      reviews: ratings
+    });
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+app.post('/reviews/delete', async function (req, res) {
+  const reviewID = req.body.reviewID;
+
+  try {
+
+    const query = 'DELETE FROM Reviews where reviewID=?;';
+
+    await db.query(query, [reviewID]);
+    res.redirect('/reviews/browse');
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Database Error");
+  }
+})
+
+
+
+
+
+
+
+
+
+
 
 /*
     LISTENER

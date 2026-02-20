@@ -1,5 +1,24 @@
 <%- include('../partials/header', { title: 'Update Developer' }) %>
 <h1>Update developer</h1>
 <p class="subtitle">Select a developer to edit. (Form coming when DB is connected.)</p>
+
+<form action="/developers/update" method="post">
+
+    <label>Choose a Developer to Edit</label>
+
+    <%  if( developers && developers.length) { %>
+        <select name="chooseDev">
+            <% developers.forEach(u => { %>
+                <option value=<%= u.developerID %>> <%= u.developerName %> </option>
+          <%  }) %>
+        </select>
+        <br>
+        <label>Change Developers Name</label>
+        <input type="text" name="developerChange"> <br>
+    <% } %>
+    <br>
+    <button type="submit">Confirm Edits</button>
+</form>
+
 <a href="/developers" class="back-link">← Back to Developers</a>
 <%- include('../partials/footer') %>

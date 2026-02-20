@@ -1,10 +1,32 @@
 <%- include('../partials/header', { title: 'Games' }) %>
-<h1>Games</h1>
-<p class="subtitle">Browse, add, update, or delete games.</p>
-<ul class="links">
-  <li><a href="/games/browse">Browse</a></li>
-  <li><a href="/games/add">Add</a></li>
-  <li><a href="/games/update">Update</a></li>
-  <li><a href="/games/delete">Delete</a></li>
+<header class="action-page__header">
+  <h1>Games</h1>
+  <p class="subtitle">Browse, add, update, or delete games.</p>
+</header>
+<ul class="action-grid" role="list">
+  <li>
+    <a href="/games/browse" class="action-card">
+      <span class="action-card__title">Browse</span>
+      <p class="action-card__desc">View all games</p>
+    </a>
+  </li>
+  <li>
+    <a href="/games/add" class="action-card">
+      <span class="action-card__title">Add</span>
+      <p class="action-card__desc">Create a new game</p>
+    </a>
+  </li>
+  <li>
+    <a href="/games/update" class="action-card">
+      <span class="action-card__title">Update</span>
+      <p class="action-card__desc">Edit an existing game</p>
+    </a>
+  </li>
+  <li>
+    <a href="/games/delete" class="action-card">
+      <span class="action-card__title">Delete</span>
+      <p class="action-card__desc">Remove a game</p>
+    </a>
+  </li>
 </ul>
 <%- include('../partials/footer') %>

@@ -1,5 +1,60 @@
 <%- include('../partials/header', { title: 'Update Purchase' }) %>
-<h1>Update purchase</h1>
-<p class="subtitle">Select a purchase to edit. (Form coming when DB is connected.)</p>
+
+<h1>Update Purchase</h1>
+<p class="subtitle">Select a purchase to edit.</p>
+
+<form action="/purchases/update" method="post">
+
+    <label>Choose A Purchase to Edit</label>
+
+    <% if (purchases && purchases.length) { %>
+        <select name="choosePurchase">
+            <% purchases.forEach(p => { %>
+                <option value="<%= p.purchaseID %>">
+                    Purchase #<%= p.purchaseID %>
+                </option>
+            <% }) %>
+        </select>
+
+        <br>
+
+        <label>New User</label>
+        <select name="newUserID">
+            <% users.forEach(u => { %>
+                <option value="<%= u.userID %>">
+                    <%= u.username %>
+                </option>
+            <% }) %>
+        </select>
+
+        <br>
+
+        <label>New Game</label>
+        <select name="newGameID">
+            <% games.forEach(g => { %>
+                <option value="<%= g.gameID %>">
+                    <%= g.title %>
+                </option>
+            <% }) %>
+        </select>
+
+        <br>
+
+        <label>New Price</label>
+        <input type="number" name="newPrice" step="0.01" min="0" required placeholder="0.00">
+
+        <br>
+
+        <label>New Purchase Date</label>
+        <input type="date" name="newDate" required>
+
+    <% } %>
+
+    <br>
+    <button type="submit">Confirm Edits</button>
+
+</form>
+
 <a href="/purchases" class="back-link">← Back to Purchases</a>
+
 <%- include('../partials/footer') %>

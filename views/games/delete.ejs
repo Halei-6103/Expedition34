@@ -2,13 +2,18 @@
 <h1>Delete game</h1>
 <p class="subtitle">Select a game to remove. (Form coming when DB is connected.)</p>
 
-<form action="/developers/delete" method="POST">
-  <label>Developer ID </label>
-  <select name = "developerName"> 
-    <% games.forEach(d => { %>
-    <option value = <%= d.gameID %>> <%= d.titles %> </option> 
+<form action="/games/delete" method="POST">
+  <label>Game ID </label>
+  <select name = "gameID"> 
+    <% titles.forEach(t => { %>
+    <option value = <%= t.gameID %>> <%= t.title %> </option> 
     <% } ) %> 
   </select> <br>
 
+  <button type="submit">Remove Game</button>
+</form>
+
+
+>>>>>>> b2952cf8ac8d6544cfc568ce39d3fa90b3200ebf
 <a href="/games" class="back-link">← Back to Games</a>
 <%- include('../partials/footer') %>

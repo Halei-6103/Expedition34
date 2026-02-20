@@ -1,10 +1,32 @@
 <%- include('../partials/header', { title: 'Users' }) %>
-<h1>Users</h1>
-<p class="subtitle">Browse, add, update, or delete users.</p>
-<ul class="links">
-  <li><a href="/users/browse">Browse</a></li>
-  <li><a href="/users/add">Add</a></li>
-  <li><a href="/users/update">Update</a></li>
-  <li><a href="/users/delete">Delete</a></li>
+<header class="action-page__header">
+  <h1>Users</h1>
+  <p class="subtitle">Browse, add, update, or delete users.</p>
+</header>
+<ul class="action-grid" role="list">
+  <li>
+    <a href="/users/browse" class="action-card">
+      <span class="action-card__title">Browse</span>
+      <p class="action-card__desc">View all users</p>
+    </a>
+  </li>
+  <li>
+    <a href="/users/add" class="action-card">
+      <span class="action-card__title">Add</span>
+      <p class="action-card__desc">Create a new user</p>
+    </a>
+  </li>
+  <li>
+    <a href="/users/update" class="action-card">
+      <span class="action-card__title">Update</span>
+      <p class="action-card__desc">Edit an existing user</p>
+    </a>
+  </li>
+  <li>
+    <a href="/users/delete" class="action-card">
+      <span class="action-card__title">Delete</span>
+      <p class="action-card__desc">Remove a user</p>
+    </a>
+  </li>
 </ul>
 <%- include('../partials/footer') %>
