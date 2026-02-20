@@ -13,6 +13,7 @@
         <th>UserID</th>
         <th>Username</th>
         <th>accountType</th>
+        <th>Delete</th>
       </tr>
 
       <% users.forEach(u => { %>
@@ -20,6 +21,12 @@
         <td> <%= u.userID %> </td>
         <td> <%= u.username %> </td>
         <td> <%= u.accountType %> </td>
+        <td>
+        <form action="/users/browse" method="POST">
+        <input type="hidden" name="userID" value="<%= u.userID %>">
+        <button type="submit" class="deleteUser">Delete </button></td>
+        </form>
+       </td>
        </tr>
   <% }) %>
 

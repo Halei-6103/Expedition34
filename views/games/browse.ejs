@@ -13,6 +13,7 @@
         <th>Ratings</th>
         <th>Description</th>
         <th>Made By</th>
+        <th>Delete</th>
       </tr>
 
       <% games.forEach(g => { %>
@@ -22,6 +23,12 @@
         <td> <%= g.rating %>/5 </td>
         <td> <%= g.description %> </td>
         <TD> <%= g.developerName %> </TD>
+        <td>
+        <form action="/games/browse" method="POST">
+        <input type="hidden" name="gameID" value="<%= g.gameID %>">
+        <button type="submit" class="deleteGame">Delete </button></td>
+        </form>
+       </td>
        </tr>
   <% }) %>
 

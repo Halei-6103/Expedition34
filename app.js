@@ -23,13 +23,27 @@ app.get('/', (req, res) => res.render('index'));
 app.get('/developers', (req, res) => res.render('developers/index'));
 app.get('/developers/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Developers.developerName, GROUP_CONCAT( DISTINCT Games.title SEPARATOR ", ") AS titles, ROUND(AVG(Reviews.rating), 1) AS avgR FROM Developers LEFT JOIN Games ON Developers.developerID = Games.developerID LEFT JOIN Reviews ON Games.gameID = Reviews.gameID GROUP BY Developers.developerID;';
+    const query1 = 'SELECT Developers.developerID, Developers.developerName, GROUP_CONCAT( DISTINCT Games.title SEPARATOR ", ") AS titles, ROUND(AVG(Reviews.rating), 1) AS avgR FROM Developers LEFT JOIN Games ON Developers.developerID = Games.developerID LEFT JOIN Reviews ON Games.gameID = Reviews.gameID GROUP BY Developers.developerID;';
     const [rows] = await db.query(query1);
 
     res.render('developers/browse', {
       title: 'Browse Developers',
       developers: rows
     });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+app.post('/developers/browse', async function (req, res) {
+  try {
+     const getDeveloperID = req.body.developerID;
+
+     const query = 'DELETE FROM Developers WHERE developerID=?';
+
+     await db.query(query, [getDeveloperID]);
+     res.redirect('/developers/browse');
 
   } catch (error) {
     console.error(error);
@@ -129,7 +143,19 @@ app.get('/games/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
+app.post('/games/browse', async function (req, res) {
+  try {
+     const getGameID = req.body.gamesID;
 
+     const query = 'DELETE FROM Games WHERE gameID=?';
+
+     await db.query(query, [getGameID]);
+     res.redirect('/games/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
 
 app.get('/games/add', async function (req, res) {
   try {
@@ -236,6 +262,21 @@ app.get('/users/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
+
+app.post('/users/browse', async function (req, res) {
+  try {
+     const getUserID = req.body.userID;
+
+     const query = 'DELETE FROM Users WHERE userID=?';
+
+     await db.query(query, [getUserID]);
+     res.redirect('/users/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+
 app.get('/users/add', (req, res) => res.render('users/add', { title: 'Add User' }));
 
 app.post('/users/add', async function (req, res) {
@@ -322,6 +363,21 @@ app.get('/purchases/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
+
+app.post('/purchases/browse', async function (req, res) {
+  try {
+     const getPurchaseID = req.body.purchaseID;
+
+     const query = 'DELETE FROM Purchases WHERE purchaseID=?';
+
+     await db.query(query, [getPurchaseID]);
+     res.redirect('/purchases/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+
 app.get('/purchases/add', async function (req, res) {
   try {
 
@@ -430,7 +486,7 @@ app.post('/purchases/delete', async function (req, res) {
 app.get('/reviews', (req, res) => res.render('reviews/index'));
 app.get('/reviews/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Users.username, Games.title, Reviews.comment, Reviews.rating, Reviews.category, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate FROM Reviews LEFT JOIN Users ON Users.userID = Reviews.userID LEFT JOIN Games ON Games.gameID = Reviews.gameID ORDER BY reviewDate ASC;';
+    const query1 = 'SELECT Users.username, Games.title, Reviews.comment, Reviews.rating, Reviews.category, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate, Reviews.reviewID FROM Reviews LEFT JOIN Users ON Users.userID = Reviews.userID LEFT JOIN Games ON Games.gameID = Reviews.gameID ORDER BY Reviews.reviewDate DESC;';
     const [reviews] = await db.query(query1);
 
     res.render('reviews/browse', {
@@ -443,6 +499,21 @@ app.get('/reviews/browse', async function (req, res) {
     res.status(500).send('Database error');
   }
 });
+
+app.post('/reviews/browse', async function (req, res) {
+  try {
+     const getReviewID = req.body.reviewID;
+
+     const query = 'DELETE FROM Reviews WHERE reviewID=?';
+
+     await db.query(query, [getReviewID]);
+     res.redirect('/reviews/browse');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Database error');
+  }
+});
+
 app.get('/reviews/add', async function (req, res) {
   try {
     const getUser = 'SELECT userID, username FROM Users;'

@@ -14,6 +14,7 @@
         <th>Rating</th>
         <th>Category</th>
         <th>Date</th>
+        <th>Delete</th>
       </tr>
 
       <% reviews.forEach(r => { %>
@@ -24,6 +25,12 @@
         <td> <%= r.rating %> </td>
         <td> <%= r.category %> </td>
         <td> <%= r.reviewDate %> </td>
+        <td>
+        <form action="/reviews/browse" method="POST">
+        <input type="hidden" name="reviewID" value="<%= r.reviewID %>">
+        <button type="submit" class="deleteReview">Delete </button></td>
+        </form>
+       </td>
        </tr>
   <% }) %>
 
