@@ -13,6 +13,7 @@
         <th>Developers</th>
         <th>Games</th>
         <th>Average Rating</th>
+        <th>Delete</th>
       </tr>
 
       <% developers.forEach(d => { %>
@@ -20,12 +21,16 @@
         <td> <%= d.developerName %> </td>
        <td><%= d.titles ? d.titles : "-" %></td>
        <td><%= d.avgR ? d.avgR : "-" %> </td>
+       <td>
+        <form action="/developers/browse" method="POST">
+        <input type="hidden" name="developerID" value="<%= d.developerID %>">
+        <button type="submit" class="deleteDeveloper">Delete </button>
+      </form></td>
        </tr>
   <% }) %>
 
    </table>
   </div>
->
 <% } else { %>
   <div class="empty-state">No developers yet. (DB not connected.)</div>
 <% } %>
