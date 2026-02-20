@@ -1,5 +1,29 @@
 <%- include('../partials/header', { title: 'Update Review' }) %>
 <h1>Update review</h1>
-<p class="subtitle">Select a review to edit. (Form coming when DB is connected.)</p>
+<p class="subtitle">Select a review to edit.</p>
+<form action="/reviews/update" method="POST">
+    <label style="margin-bottom:6px; display:block;">Choose a Review to edit</label>
+    <select name="chooseReview">
+        <% if (reviews && reviews.length) {%>
+            <% reviews.forEach(r => { %>
+                <option value=<%= r.reviewID %>> <%= r.username %> reviewed <%= r.title %> with <%= r.rating %>★ (<%= r.reviewDate %>) </option>
+           <% }) %>
+        <%}%>
+    </select> <br>
+    <label style="margin-bottom:6px; display:block;">Edit comment</label>
+    <textarea name="newComment"></textarea><br>
+    
+    <label style="margin-bottom:6px; display:block;">Edit Rating 1-5</label>
+    <input type="number" name="newRating"> <br>
+
+    <label style="margin-bottom:6px; display:block;">Edit Category</label>
+    <select name="newCategory">
+        <option value="general">General</option>
+        <option value="bug">Bug</option>
+        <option value="suggestion">Suggestion</option>
+    </select> <br>
+
+    <button type="submit">Edit review</button>
+</form>
 <a href="/reviews" class="back-link">← Back to Reviews</a>
 <%- include('../partials/footer') %>
