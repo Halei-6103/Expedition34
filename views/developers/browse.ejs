@@ -1,38 +1,205 @@
 <%- include('../partials/header', { title }) %>
+<style>
+  .developers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 900px) {
+    .developers-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 600px) and (max-width: 899px) {
+    .developers-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 599px) {
+    .developers-grid { grid-template-columns: 1fr; }
+  }
+  .developer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .developer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .developer-card__name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+    line-height: 1.3;
+  }
+  .developer-card__games {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+  .developer-card__pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 999px;
+    background: rgba(201, 106, 58, 0.15);
+    color: var(--primary);
+    border: 1px solid var(--border);
+  }
+  .developer-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .developer-card__stars {
+    color: var(--primary);
+    letter-spacing: 0;
+  }
+  .developer-card__stars-sep {
+    margin-left: 0.35em;
+  }
+  .developer-card__rating-num {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .developer-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .developer-card__footer-rating {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+  .developer-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  .developer-card__actions form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    width: auto;
+  }
+  .developer-card__actions a,
+  .developer-card__actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4rem;
+    min-height: 2rem;
+    width: 4rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .developer-card__actions a:hover,
+  .developer-card__actions button:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+  .developer-card__actions button.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .developer-card__actions button.primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #fff;
+  }
+  .developers-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+</style>
+
 <h1><%= title %></h1>
 <div class="toolbar">
+  <a href="/developers">Developers</a>
   <a href="/developers/add" class="primary">Add</a>
-  <a href="/developers/update" class="primary">Update</a>
 </div>
 
-
 <% if (developers && developers.length) { %>
-  <div class="data-list">
-    <table border="1">
-      <tr>
-        <th>Developers</th>
-        <th>Games</th>
-        <th>Average Rating</th>
-        <th>Delete</th>
-      </tr>
-
-      <% developers.forEach(d => { %>
-       <tr>
-        <td> <%= d.developerName %> </td>
-       <td><%= d.titles ? d.titles : "-" %></td>
-       <td><%= d.avgR ? d.avgR : "-" %> </td>
-       <td>
-        <form action="/developers/browse" method="POST">
-        <input type="hidden" name="developerID" value="<%= d.developerID %>">
-        <button type="submit" class="deleteDeveloper">Delete </button>
-      </form></td>
-       </tr>
-  <% }) %>
-
-   </table>
+  <div class="developers-grid">
+    <% developers.forEach(d => { %>
+      <article class="developer-card">
+        <h2 class="developer-card__name"><%= d.developerName %></h2>
+        <div class="developer-card__games">
+          <% const gamesList = (d.titles && d.titles !== '-') ? d.titles.split(',').map(t => t.trim()).filter(Boolean) : []; %>
+          <% if (gamesList.length) { %>
+            <% gamesList.forEach(game => { %>
+              <span class="developer-card__pill"><%= game %></span>
+            <% }); %>
+          <% } else { %>
+            <span class="developer-card__pill">No games yet</span>
+          <% } %>
+        </div>
+        <div class="developer-card__rating">
+          <% const hasRating = d.avgR != null && d.avgR !== '' && d.avgR !== '-'; %>
+          <% if (hasRating) { %>
+            <% const r = typeof d.avgR === 'number' ? d.avgR : parseFloat(d.avgR) || 0; %>
+            <% const full = Math.floor(r); %>
+            <% const half = r - full >= 0.5; %>
+            <span class="developer-card__stars" aria-label="Average rating: <%= r %> out of 5">
+              <% for (let i = 0; i < full; i++) { %>★<% } %>
+              <% if (half) { %>½<% } %>
+              <% if (half && 5 - full - 1 > 0) { %><span class="developer-card__stars-sep"><% } %>
+              <% for (let i = 0; i < 5 - full - (half ? 1 : 0); i++) { %>☆<% } %>
+              <% if (half && 5 - full - 1 > 0) { %></span><% } %>
+            </span>
+            <span class="developer-card__rating-num"><%= typeof d.avgR === 'number' ? d.avgR.toFixed(1) : (parseFloat(d.avgR) || 0).toFixed(1) %> / 5</span>
+          <% } else { %>
+            <span class="developer-card__rating-num">No ratings yet</span>
+          <% } %>
+        </div>
+        <div class="developer-card__footer">
+          <span class="developer-card__footer-rating">
+            <% if (hasRating) { %>
+              <%= typeof d.avgR === 'number' ? d.avgR.toFixed(1) : (parseFloat(d.avgR) || 0).toFixed(1) %> / 5
+            <% } else { %>
+              —
+            <% } %>
+          </span>
+          <div class="developer-card__actions">
+            <a href="/developers/update">Update</a>
+            <form action="/developers/browse" method="POST">
+              <input type="hidden" name="developerID" value="<%= d.developerID %>">
+              <button type="submit" class="primary">Delete</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    <% }) %>
   </div>
 <% } else { %>
-  <div class="empty-state">No developers yet. (DB not connected.)</div>
+  <p class="developers-empty">No developers found.</p>
 <% } %>
-<%- include('../partials/footer') %>
 
+<%- include('../partials/footer') %>

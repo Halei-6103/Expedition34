@@ -1,41 +1,136 @@
 <%- include('../partials/header', { title }) %>
+<style>
+  .users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    max-width: 640px;
+  }
+  .user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .user-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: var(--shadow-md);
+  }
+  .user-row__main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .user-row__name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+  .user-row__badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 999px;
+    background: rgba(201, 106, 58, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--border);
+  }
+  .user-row__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .user-row__actions form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    width: auto;
+  }
+  .user-row__actions a,
+  .user-row__actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4rem;
+    min-height: 2rem;
+    padding: 0;
+    margin: 0;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    box-sizing: border-box;
+  }
+  .user-row__actions a:hover,
+  .user-row__actions button:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+  .user-row__actions button.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .user-row__actions button.primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #fff;
+  }
+  .users-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 640px;
+  }
+</style>
+
 <h1><%= title %></h1>
 <div class="toolbar">
   <a href="/users">Users</a>
   <a href="/users/add" class="primary">Add</a>
-  <a href="/users/update" class="primary">Update</a>
 </div>
 
-
 <% if (users && users.length) { %>
-  <div class="data-list">
-    <table border="1">
-      <tr>
-        <th>UserID</th>
-        <th>Username</th>
-        <th>accountType</th>
-        <th>Delete</th>
-      </tr>
-
-      <% users.forEach(u => { %>
-       <tr>
-        <td> <%= u.userID %> </td>
-        <td> <%= u.username %> </td>
-        <td> <%= u.accountType %> </td>
-        <td>
-        <form action="/users/browse" method="POST">
-        <input type="hidden" name="userID" value="<%= u.userID %>">
-        <button type="submit" class="deleteUser">Delete </button></td>
-        </form>
-       </td>
-       </tr>
-  <% }) %>
-
-   </table>
+  <div class="users-list">
+    <% users.forEach(u => { %>
+      <div class="user-row">
+        <div class="user-row__main">
+          <h2 class="user-row__name"><%= u.username %></h2>
+          <span class="user-row__badge"><%= u.accountType %></span>
+        </div>
+        <div class="user-row__actions">
+          <a href="/users/update">Update</a>
+          <form action="/users/browse" method="POST">
+            <input type="hidden" name="userID" value="<%= u.userID %>">
+            <button type="submit" class="primary">Delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
   </div>
-
-
 <% } else { %>
-  <div class="empty-state">No users yet. (DB not connected.)</div>
+  <p class="users-empty">No users found.</p>
 <% } %>
+
 <%- include('../partials/footer') %>

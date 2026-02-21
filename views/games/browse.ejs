@@ -122,6 +122,16 @@
     border-color: var(--secondary);
     color: var(--secondary);
   }
+  .game-card__actions button.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .game-card__actions button.primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #fff;
+  }
   .games-empty {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -134,7 +144,6 @@
 <div class="toolbar">
   <a href="/games">Games</a>
   <a href="/games/add" class="primary">Add</a>
-  <a href="/games/update" class="primary">Update</a>
 </div>
 
 <% if (games && games.length) { %>
@@ -160,10 +169,10 @@
         <div class="game-card__footer">
           <span class="game-card__price">$<%= Number(g.price).toFixed(2) %></span>
           <div class="game-card__actions">
-            <a href="/games/update">Edit</a>
+            <a href="/games/update">Update</a>
             <form action="/games/browse" method="POST" style="display:inline;">
               <input type="hidden" name="gameID" value="<%= g.gameID %>">
-              <button type="submit">Delete</button>
+              <button type="submit" class="primary">Delete</button>
             </form>
           </div>
         </div>
