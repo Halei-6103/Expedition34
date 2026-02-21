@@ -1,41 +1,177 @@
 <%- include('../partials/header', { title }) %>
+<style>
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 900px) {
+    .games-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .games-grid { grid-template-columns: 1fr; }
+  }
+  .game-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .game-card__title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+  .game-card__developer {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem;
+  }
+  .game-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .game-card__stars {
+    color: var(--primary);
+    letter-spacing: 0;
+  }
+  .game-card__stars-sep {
+    margin-left: 0.35em;
+  }
+  .game-card__stars-num {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .game-card__desc {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.45;
+    margin: 0 0 1rem;
+    max-height: 3.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  .game-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .game-card__price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .game-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  .game-card__actions form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    width: auto;
+  }
+  .game-card__actions a,
+  .game-card__actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 2rem;
+    min-width: 4rem;
+    min-height: 2rem;
+    padding: 0;
+    margin: 0;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .game-card__actions a:hover,
+  .game-card__actions button:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+  .games-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+</style>
+
 <h1><%= title %></h1>
 <div class="toolbar">
   <a href="/games">Games</a>
   <a href="/games/add" class="primary">Add</a>
   <a href="/games/update" class="primary">Update</a>
 </div>
+
 <% if (games && games.length) { %>
-  <div class="data-list">
-    <table border="1">
-      <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Ratings</th>
-        <th>Description</th>
-        <th>Made By</th>
-        <th>Delete</th>
-      </tr>
-
-      <% games.forEach(g => { %>
-       <tr>
-        <td> <%= g.title %> </td>
-        <td> <%= g.price %> USD </td>
-        <td> <%= g.rating %>/5 </td>
-        <td> <%= g.description %> </td>
-        <TD> <%= g.developerName %> </TD>
-        <td>
-        <form action="/games/browse" method="POST">
-        <input type="hidden" name="gameID" value="<%= g.gameID %>">
-        <button type="submit" class="deleteGame">Delete </button></td>
-        </form>
-       </td>
-       </tr>
-  <% }) %>
-
-   </table>
+  <div class="games-grid">
+    <% games.forEach(g => { %>
+      <article class="game-card">
+        <h2 class="game-card__title"><%= g.title %></h2>
+        <p class="game-card__developer"><%= g.developerName || '—' %></p>
+        <div class="game-card__rating">
+          <span class="game-card__stars" aria-label="Rating: <%= g.rating %> out of 5">
+            <% const r = typeof g.rating === 'number' ? g.rating : parseFloat(g.rating) || 0; %>
+            <% const full = Math.floor(r); %>
+            <% const half = r - full >= 0.5; %>
+            <% for (let i = 0; i < full; i++) { %>★<% } %>
+            <% if (half) { %>½<% } %>
+            <% if (half && 5 - full - 1 > 0) { %><span class="game-card__stars-sep"><% } %>
+            <% for (let i = 0; i < 5 - full - (half ? 1 : 0); i++) { %>☆<% } %>
+            <% if (half && 5 - full - 1 > 0) { %></span><% } %>
+          </span>
+          <span class="game-card__stars-num"><%= typeof g.rating === 'number' ? g.rating.toFixed(1) : (parseFloat(g.rating) || 0).toFixed(1) %> / 5</span>
+        </div>
+        <p class="game-card__desc"><%= (g.description || '').length > 140 ? (g.description || '').slice(0, 140) + '...' : (g.description || '') %></p>
+        <div class="game-card__footer">
+          <span class="game-card__price">$<%= Number(g.price).toFixed(2) %></span>
+          <div class="game-card__actions">
+            <a href="/games/update">Edit</a>
+            <form action="/games/browse" method="POST" style="display:inline;">
+              <input type="hidden" name="gameID" value="<%= g.gameID %>">
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    <% }) %>
   </div>
 <% } else { %>
-  <div class="empty-state">No games yet. (DB not connected.)</div>
+  <p class="games-empty">No games found.</p>
 <% } %>
+
 <%- include('../partials/footer') %>

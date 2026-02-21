@@ -103,7 +103,7 @@ app.post ('/developers/update', async function (req, res) {
 app.get('/games', (req, res) => res.render('games/index'));
 app.get('/games/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Games.title, Games.price, ROUND(AVG(Reviews.rating),2) AS rating, Games.description, Developers.developerName FROM Games LEFT JOIN Reviews ON Games.gameID=Reviews.gameID LEFT JOIN Developers ON Games.developerID=Developers.developerID GROUP BY Games.gameID, Games.price, Games.description, Developers.developerName;';
+    const query1 = 'SELECT Games.gameID, Games.title, Games.price, ROUND(AVG(Reviews.rating),2) AS rating, Games.description, Developers.developerName FROM Games LEFT JOIN Reviews ON Games.gameID=Reviews.gameID LEFT JOIN Developers ON Games.developerID=Developers.developerID GROUP BY Games.gameID, Games.price, Games.description, Developers.developerName;';
     const [games] = await db.query(query1);
 
     res.render('games/browse', {
