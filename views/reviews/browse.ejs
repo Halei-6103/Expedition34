@@ -1,44 +1,188 @@
 <%- include('../partials/header', { title }) %>
+<style>
+  .reviews-feed {
+    max-width: 1000px;
+    margin: 1.5rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .review-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .review-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .review-card__game {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+  .review-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+  .review-card__stars {
+    color: var(--primary);
+    letter-spacing: 0;
+  }
+  .review-card__rating-num {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .review-card__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+  }
+  .review-card__by {
+    color: var(--text-muted);
+  }
+  .review-card__badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 999px;
+    background: rgba(201, 106, 58, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--border);
+  }
+  .review-card__date {
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+  .review-card__comment {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 1rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .review-card__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .review-card__footer form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    width: auto;
+  }
+  .review-card__footer a,
+  .review-card__footer button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.5rem;
+    min-height: 1.75rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    box-sizing: border-box;
+  }
+  .review-card__footer a:hover,
+  .review-card__footer button:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+  }
+  .review-card__footer button.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .review-card__footer button.primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #fff;
+  }
+  .reviews-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 1000px;
+    margin: 1.5rem auto 0;
+  }
+</style>
+
 <h1><%= title %></h1>
 <div class="toolbar">
   <a href="/reviews">Reviews</a>
   <a href="/reviews/add" class="primary">Add</a>
-  <a href="/reviews/update" class="primary">Update</a>
 </div>
+
 <% if (reviews && reviews.length) { %>
-  <div class="data-list">
-    <table border="1">
-      <tr>
-        <th>Username</th>
-        <th>Game</th>
-        <th>Comment</th>
-        <th>Rating</th>
-        <th>Category</th>
-        <th>Date</th>
-        <th>Delete</th>
-      </tr>
-
-      <% reviews.forEach(r => { %>
-       <tr>
-        <td> <%= r.username %> </td>
-        <td> <%= r.title %> </td>
-        <td><%= r.comment ? r.comment : "------------" %> </td>
-        <td> <%= r.rating %> </td>
-        <td> <%= r.category %> </td>
-        <td> <%= r.reviewDate %> </td>
-        <td>
-        <form action="/reviews/browse" method="POST">
-        <input type="hidden" name="reviewID" value="<%= r.reviewID %>">
-        <button type="submit" class="deleteReview">Delete </button></td>
-        </form>
-       </td>
-       </tr>
-  <% }) %>
-
-   </table>
+  <div class="reviews-feed">
+    <% reviews.forEach(r => { %>
+      <article class="review-card">
+        <div class="review-card__top">
+          <h2 class="review-card__game"><%= r.title %></h2>
+          <div class="review-card__rating">
+            <% const ratingNum = typeof r.rating === 'number' ? r.rating : parseFloat(r.rating) || 0; %>
+            <% const fullStars = Math.round(ratingNum); %>
+            <% const capped = Math.min(5, Math.max(0, fullStars)); %>
+            <span class="review-card__stars" aria-label="Rating: <%= capped %> out of 5">
+              <% for (let i = 0; i < capped; i++) { %>★<% } %>
+              <% for (let i = 0; i < 5 - capped; i++) { %>☆<% } %>
+            </span>
+            <span class="review-card__rating-num"><%= capped %></span>
+          </div>
+        </div>
+        <div class="review-card__meta">
+          <span class="review-card__by">by <%= r.username %></span>
+          <% if (r.category && r.category !== '-' && r.category !== '') { %>
+            <span class="review-card__badge"><%= r.category %></span>
+          <% } %>
+          <span class="review-card__date"><%= r.reviewDate %></span>
+        </div>
+        <p class="review-card__comment">
+          <%= (r.comment && r.comment.trim() && r.comment !== '------------') ? r.comment : 'No comment provided.' %>
+        </p>
+        <div class="review-card__footer">
+          <a href="/reviews/update">Update</a>
+          <form action="/reviews/browse" method="POST">
+            <input type="hidden" name="reviewID" value="<%= r.reviewID %>">
+            <button type="submit" class="primary">Delete</button>
+          </form>
+        </div>
+      </article>
+    <% }) %>
   </div>
-
 <% } else { %>
-  <div class="empty-state">No reviews yet. (DB not connected.)</div>
+  <p class="reviews-empty">No reviews found.</p>
 <% } %>
+
 <%- include('../partials/footer') %>
