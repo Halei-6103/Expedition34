@@ -71,11 +71,12 @@ app.post('/developers/add', async function (req, res) {
 app.get('/developers/update', async function (req, res){
   try {
     const getDevelopers = 'SELECT * FROM Developers;';
-
     const [developers] = await db.query(getDevelopers);
+    const selectedDeveloperID = req.query.developerID || null;
 
     res.render('developers/update', {
-      developers: developers
+      developers: developers,
+      selectedDeveloperID: selectedDeveloperID
     });
 
   } catch (error) {
@@ -165,12 +166,13 @@ app.post('/games/add', async function (req, res) {
 
 
 app.get('/games/update', async function (req, res) {
-
   try {
     const getGame = 'SELECT gameID, title FROM Games;';
     const [games] = await db.query(getGame);
+    const selectedGameID = req.query.gameID || null;
     res.render('games/update', {
-      games: games
+      games: games,
+      selectedGameID: selectedGameID
     });
   } catch (error) {
     console.error(error);
@@ -246,9 +248,10 @@ app.get('/users/update', async function (req, res) {
   try {
     const getUsers = 'SELECT userID, username FROM Users;';
     const [users] = await db.query(getUsers);
-
+    const selectedUserID = req.query.userID || null;
     res.render('users/update', {
-      users: users
+      users: users,
+      selectedUserID: selectedUserID
     });
   } catch(error) {
     console.error(error);
@@ -372,11 +375,13 @@ app.get('/purchases/update', async function (req, res) {
     const [purchases] = await db.query(getPurchases);
     const [users] = await db.query(getUsers);
     const [games] = await db.query(getGames);
+    const selectedPurchaseID = req.query.purchaseID || null;
 
     res.render("purchases/update", {
       purchases: purchases,
       users: users,
-      games: games
+      games: games,
+      selectedPurchaseID: selectedPurchaseID
     })
 
   } catch(error) {
@@ -475,9 +480,11 @@ app.get('/reviews/update', async function (req, res) {
   try {
     const getInfo = 'SELECT reviewID, Users.username, Games.title, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate, rating FROM Reviews LEFT JOIN Users ON Reviews.userID = Users.userID LEFT JOIN Games ON Reviews.gameID = Games.gameID  ORDER BY Reviews.reviewID DESC;';
     const [info] = await db.query(getInfo);
+    const selectedReviewID = req.query.reviewID || null;
 
     res.render("reviews/update", {
-      reviews: info
+      reviews: info,
+      selectedReviewID: selectedReviewID
     });
   } catch (error){
     console.error(error);

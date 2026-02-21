@@ -6,7 +6,7 @@
     <select name="chooseReview">
         <% if (reviews && reviews.length) {%>
             <% reviews.forEach(r => { %>
-                <option value=<%= r.reviewID %>> <%= r.username %> reviewed <%= r.title %> with <%= r.rating %>★ (<%= r.reviewDate %>) </option>
+                <option value="<%= r.reviewID %>"<%= (typeof selectedReviewID !== 'undefined' && String(r.reviewID) === String(selectedReviewID)) ? ' selected' : '' %>><%= r.username %> reviewed <%= r.title %> with <%= r.rating %>★ (<%= r.reviewDate %>)</option>
            <% }) %>
         <%}%>
     </select> <br>

@@ -120,7 +120,7 @@
           <span class="user-row__badge"><%= u.accountType %></span>
         </div>
         <div class="user-row__actions">
-          <a href="/users/update">Update</a>
+          <a href="/users/update?userID=<%= u.userID %>">Update</a>
           <form action="/users/browse" method="POST">
             <input type="hidden" name="userID" value="<%= u.userID %>">
             <button type="submit" class="primary">Delete</button>

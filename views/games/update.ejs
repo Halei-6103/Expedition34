@@ -8,7 +8,7 @@
     <%  if( games && games.length) { %>
         <select name="chooseGame">
             <% games.forEach(g => { %>
-                <option value=<%= g.gameID %>> <%= g.title %> </option>
+                <option value="<%= g.gameID %>"<%= (typeof selectedGameID !== 'undefined' && String(g.gameID) === String(selectedGameID)) ? ' selected' : '' %>><%= g.title %></option>
           <%  }) %>
         </select>
         <br>

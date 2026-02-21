@@ -172,7 +172,7 @@
           <%= (r.comment && r.comment.trim() && r.comment !== '------------') ? r.comment : 'No comment provided.' %>
         </p>
         <div class="review-card__footer">
-          <a href="/reviews/update">Update</a>
+          <a href="/reviews/update?reviewID=<%= r.reviewID %>">Update</a>
           <form action="/reviews/browse" method="POST">
             <input type="hidden" name="reviewID" value="<%= r.reviewID %>">
             <button type="submit" class="primary">Delete</button>

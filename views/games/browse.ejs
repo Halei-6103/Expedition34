@@ -169,7 +169,7 @@
         <div class="game-card__footer">
           <span class="game-card__price">$<%= Number(g.price).toFixed(2) %></span>
           <div class="game-card__actions">
-            <a href="/games/update">Update</a>
+            <a href="/games/update?gameID=<%= g.gameID %>">Update</a>
             <form action="/games/browse" method="POST" style="display:inline;">
               <input type="hidden" name="gameID" value="<%= g.gameID %>">
               <button type="submit" class="primary">Delete</button>

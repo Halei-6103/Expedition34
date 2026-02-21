@@ -8,7 +8,7 @@
     <%  if( users && users.length) { %>
         <select name="chooseUser">
             <% users.forEach(u => { %>
-                <option value=<%= u.userID %>> <%= u.username %> </option>
+                <option value="<%= u.userID %>"<%= (typeof selectedUserID !== 'undefined' && String(u.userID) === String(selectedUserID)) ? ' selected' : '' %>><%= u.username %></option>
           <%  }) %>
         </select>
         <br>

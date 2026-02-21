@@ -9,7 +9,7 @@
     <%  if( developers && developers.length) { %>
         <select name="chooseDev">
             <% developers.forEach(u => { %>
-                <option value=<%= u.developerID %>> <%= u.developerName %> </option>
+                <option value="<%= u.developerID %>"<%= (typeof selectedDeveloperID !== 'undefined' && String(u.developerID) === String(selectedDeveloperID)) ? ' selected' : '' %>><%= u.developerName %></option>
           <%  }) %>
         </select>
         <br>

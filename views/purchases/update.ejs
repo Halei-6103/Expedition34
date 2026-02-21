@@ -10,7 +10,7 @@
     <% if (purchases && purchases.length) { %>
         <select name="choosePurchase">
             <% purchases.forEach(p => { %>
-                <option value="<%= p.purchaseID %>">
+                <option value="<%= p.purchaseID %>"<%= (typeof selectedPurchaseID !== 'undefined' && String(p.purchaseID) === String(selectedPurchaseID)) ? ' selected' : '' %>>
                     Purchase #<%= p.purchaseID %>
                 </option>
             <% }) %>

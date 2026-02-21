@@ -188,7 +188,7 @@
             <% } %>
           </span>
           <div class="developer-card__actions">
-            <a href="/developers/update">Update</a>
+            <a href="/developers/update?developerID=<%= d.developerID %>">Update</a>
             <form action="/developers/browse" method="POST">
               <input type="hidden" name="developerID" value="<%= d.developerID %>">
               <button type="submit" class="primary">Delete</button>
