@@ -48,20 +48,23 @@
     }
     .nav-inner {
       position: relative;
+     display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
       padding: 0 1.875rem;
     }
-    .nav-title {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      text-align: center;
-      font-size: 2.25rem;
-      font-weight: 600;
-      color: var(--text);
-      pointer-events: none;
-    }
+.nav-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--text);
+  pointer-events: auto;
+}
     nav a {
       color: var(--primary);
       text-decoration: none;
@@ -267,7 +270,51 @@
     .data-list ul { list-style: none; margin: 0; padding: 0; }
     .data-list li { padding: 1.125rem 1.5rem; border-bottom: 1px solid var(--border); font-size: 1.425rem; }
     .data-list li:last-child { border-bottom: none; }
+    .nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  z-index: 2; /* keep buttons above other stuff */
+}
+.nav-btn {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.03);
+}
+.nav-btn:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background: rgba(255,255,255,0.06);
+}
+
   </style>
 </head>
 <body>
-  <nav><div class="nav-inner"><a href="/" class="nav-brand" title="Home" aria-label="Home"><span class="nav-home-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span></a><span class="nav-title">Expedition34</span></div></nav>
+  <nav>
+  <div class="nav-inner">
+    <!-- Left: Home icon -->
+    <a href="/" class="nav-brand" title="Home" aria-label="Home">
+      <span class="nav-home-box">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </span>
+    </a>
+
+    <!-- Center: Title (not a link so nothing fights for clicks) -->
+    <div class="nav-title"><a href="/">Expedition34</a></div>
+
+    <!-- Right: Nav buttons -->
+    <div class="nav-links">
+      <a href="/users" class="nav-btn">Users</a>
+      <a href="/developers" class="nav-btn">Developers</a>
+      <a href="/games" class="nav-btn">Games</a>
+      <a href="/purchases" class="nav-btn">Purchases</a>
+      <a href="/reviews" class="nav-btn">Reviews</a>
+    </div>
+  </div>
+</nav>

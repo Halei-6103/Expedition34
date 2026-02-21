@@ -3,7 +3,7 @@
 <p class="subtitle">Select a user to edit. (Form coming when DB is connected.)</p>
 <form action="/users/update" method="post">
 
-    <label>Choose User to Edit</label>
+    <label>Choose User to Update</label>
 
     <%  if( users && users.length) { %>
         <select name="chooseUser">
@@ -23,6 +23,6 @@
     <br>
     <button type="submit">Confirm Edits</button>
 </form>
-
-<a href="/users" class="back-link">← Back to Users</a>
+<br>
+<a href="/users" class="nav-btn">← Back to Users</a>
 <%- include('../partials/footer') %>

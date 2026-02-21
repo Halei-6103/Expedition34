@@ -119,7 +119,7 @@
     <% purchases.forEach(p => { %>
       <div class="purchase-row">
         <div class="purchase-row__main">
-          <h2 class="purchase-row__game"><%= p.title %></h2>
+          <h2 class="purchase-row__game"><%= p.title %> [#<%= p.purchaseID %>]</h2>
           <p class="purchase-row__by">Purchased by <%= p.username %></p>
         </div>
         <div class="purchase-row__meta">
