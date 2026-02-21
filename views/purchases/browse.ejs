@@ -1,4 +1,112 @@
 <%- include('../partials/header', { title }) %>
+<style>
+  .purchases-list {
+    max-width: 1000px;
+    margin: 1.5rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .purchase-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .purchase-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .purchase-row__main {
+    flex: 1;
+    min-width: 0;
+  }
+  .purchase-row__game {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.25rem;
+  }
+  .purchase-row__by {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .purchase-row__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+  }
+  .purchase-row__date-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .purchase-row__date {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .purchase-row__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  .purchase-row__price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .purchase-row__actions form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    width: auto;
+  }
+  .purchase-row__actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.5rem;
+    min-height: 1.75rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    box-sizing: border-box;
+  }
+  .purchase-row__actions button:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #fff;
+  }
+  .purchases-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 1000px;
+    margin: 1.5rem auto 0;
+  }
+</style>
+
 <h1><%= title %></h1>
 <div class="toolbar">
   <a href="/purchases">Purchases</a>
@@ -7,36 +115,31 @@
 </div>
 
 <% if (purchases && purchases.length) { %>
-  <div class="data-list">
-    <table border="1">
-      <tr>
-        <th>Purchase ID   </th>
-        <th>Username </th>
-        <th>Game </th>
-        <th>Date (PST) </th>
-        <th>Price </th>
-        <th>Delete</th>
-      </tr>
-
-      <% purchases.forEach(p => { %>
-       <tr>
-        <td> <%= p.purchaseID %> </td>
-        <td> <%= p.username %> </td>
-        <td> <%= p.title %> </td>
-        <td> <%= p.purchaseDate %> </td>
-        <td> <%= p.purchasePrice %> USD </td>
-        <td>
-        <form action="/purchases/browse" method="POST">
-        <input type="hidden" name="purchaseID" value="<%= p.purchaseID %>">
-        <button type="submit" class="deletePurchase">Delete </button></td>
-        </form>
-       </td>
-       </tr>
-  <% }) %>
-
-   </table>
+  <div class="purchases-list">
+    <% purchases.forEach(p => { %>
+      <div class="purchase-row">
+        <div class="purchase-row__main">
+          <h2 class="purchase-row__game"><%= p.title %></h2>
+          <p class="purchase-row__by">Purchased by <%= p.username %></p>
+        </div>
+        <div class="purchase-row__meta">
+          <span class="purchase-row__date-label">Date (PST)</span>
+          <span class="purchase-row__date"><%= p.purchaseDate %></span>
+        </div>
+        <div class="purchase-row__right">
+          <span class="purchase-row__price">$<%= Number(p.purchasePrice).toFixed(2) %></span>
+          <div class="purchase-row__actions">
+            <form action="/purchases/browse" method="POST">
+              <input type="hidden" name="purchaseID" value="<%= p.purchaseID %>">
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
   </div>
 <% } else { %>
-  <div class="empty-state">No purchases yet. (DB not connected.)</div>
+  <p class="purchases-empty">No purchases found.</p>
 <% } %>
+
 <%- include('../partials/footer') %>
