@@ -3,6 +3,9 @@
   <header class="home-hero">
     <h1 class="home-title">Homepage</h1>
     <p class="home-subtitle">Select a table to manage</p>
+    <% if (typeof reset === 'string' && reset === 'success') { %>
+    <p class="reset-success" style="background: var(--surface); border: 1px solid var(--secondary); color: var(--secondary); padding: 0.75rem 1rem; border-radius: var(--radius); margin-top: 1rem;">Database reset successfully. Schema and sample data have been restored.</p>
+    <% } %>
   </header>
   <ul class="home-cards" role="list">
     <li>

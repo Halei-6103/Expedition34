@@ -1,0 +1,117 @@
+-- Run this file once in MySQL to create the ResetSchema stored procedure.
+-- Then the web app can call CALL ResetSchema(); to reset schema and sample data.
+
+DROP PROCEDURE IF EXISTS ResetSchema;
+
+DELIMITER //
+
+CREATE PROCEDURE ResetSchema()
+BEGIN
+  -- Drop tables (child tables first due to foreign keys)
+  DROP TABLE IF EXISTS Reviews;
+  DROP TABLE IF EXISTS Purchases;
+  DROP TABLE IF EXISTS Games;
+  DROP TABLE IF EXISTS Users;
+  DROP TABLE IF EXISTS Developers;
+
+  -- Create tables
+  CREATE TABLE Developers (
+    developerID int AUTO_INCREMENT NOT NULL,
+    developerName varchar(100) NOT NULL,
+    PRIMARY KEY (developerID),
+    UNIQUE (developerName)
+  );
+
+  CREATE TABLE Users (
+    userID int AUTO_INCREMENT NOT NULL,
+    username varchar(100) NOT NULL,
+    accountType ENUM('User', 'Admin') NOT NULL DEFAULT 'User',
+    PRIMARY KEY (userID),
+    UNIQUE (username)
+  );
+
+  CREATE TABLE Games (
+    gameID int AUTO_INCREMENT NOT NULL,
+    developerID int NOT NULL,
+    price decimal(8,2) NOT NULL,
+    title varchar(150) NOT NULL,
+    description text NOT NULL,
+    PRIMARY KEY (gameID),
+    FOREIGN KEY (developerID) REFERENCES Developers(developerID)
+      ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (title)
+  );
+
+  CREATE TABLE Purchases (
+    purchaseID int AUTO_INCREMENT NOT NULL,
+    userID int NOT NULL,
+    gameID int NOT NULL,
+    purchaseDate datetime NOT NULL,
+    purchasePrice decimal(8,2) NOT NULL,
+    PRIMARY KEY (purchaseID),
+    UNIQUE(userID, gameID),
+    FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE ON UPDATE CASCADE
+  );
+
+  CREATE TABLE Reviews (
+    reviewID int AUTO_INCREMENT NOT NULL,
+    userID int NOT NULL,
+    gameID int NOT NULL,
+    rating int NOT NULL,
+    comment varchar(300) NULL,
+    category varchar(20) NULL,
+    reviewDate DATE NOT NULL,
+    PRIMARY KEY (reviewID),
+    UNIQUE(userID, gameID),
+    FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE ON UPDATE CASCADE
+  );
+
+  -- Sample data: Users
+  INSERT INTO Users (username, accountType) VALUES
+  ('Jade', 'User'),
+  ('Ian',  'User'),
+  ('Jack', 'User'),
+  ('Guest_user', 'User'),
+  ('Alex', 'User');
+
+  -- Sample data: Developers
+  INSERT INTO Developers (developerName) VALUES
+  ('PNW Game Studios'),
+  ('Waterfall Interactive'),
+  ('Cascade Pixel Works'),
+  ('Valve');
+
+  -- Sample data: Games
+  INSERT INTO Games (developerID, title, price, description) VALUES
+  (1, 'Star Farm Tactics', 19.99, 'Farming + combat hybrid'),
+  (1, 'Neon Runner',       9.99,  'Fast-paced arcade runner'),
+  (2, 'Cozy Caves',        14.99, 'Relaxing exploration game'),
+  (3, 'Dungeon Drift',     24.99, 'Roguelike dungeon crawler');
+
+  -- Sample data: Purchases
+  INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES
+  (1, 1, '2026-01-10 10:15:00', 19.99),
+  (1, 2, '2026-01-11 14:30:00',  9.99),
+  (1, 4, '2026-01-18 19:05:00', 24.99),
+  (2, 1, '2026-01-12 09:00:00', 19.99),
+  (2, 3, '2026-01-20 12:45:00', 14.99),
+  (3, 3, '2026-01-15 16:10:00', 14.99),
+  (3, 1, '2026-01-22 08:20:00', 19.99),
+  (5, 2, '2026-01-25 21:00:00',  9.99);
+
+  -- Sample data: Reviews
+  INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALUES
+  (1, 1, 5, 'Loved the combat system!', 'general', '2026-01-03'),
+  (1, 2, 3, NULL, 'general', '2026-01-05'),
+  (1, 4, 4, 'Challenging but fun.', 'general', '2026-01-08'),
+  (2, 1, 4, 'Great, but needs balancing.', 'bug', '2026-01-10'),
+  (2, 3, 5, 'Super relaxing experience.', 'general', '2026-01-12'),
+  (3, 3, 2, 'Too repetitive for me.', 'general', '2026-01-15'),
+  (3, 1, 4, 'Solid mechanics overall.', 'general', '2026-01-18'),
+  (5, 1, 4, 'Good idea but could be improved by doing (example)', 'suggestion', '2026-01-22');
+
+END //
+
+DELIMITER ;

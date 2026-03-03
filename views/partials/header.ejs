@@ -74,6 +74,14 @@
     nav a.nav-brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.9rem; color: var(--text); text-decoration: none; font-weight: 600; font-size: 1.65rem; }
     nav a.nav-brand:hover { color: var(--secondary); }
     nav a.nav-brand:hover .nav-home-box { border-color: var(--secondary); background: var(--bg); }
+    .nav-actions { position: absolute; right: 1.875rem; top: 50%; transform: translateY(-50%); }
+    .nav-actions form { display: inline; margin: 0; padding: 0; background: none; border: none; box-shadow: none; }
+    .nav-actions button {
+      padding: 0.5rem 0.75rem; background: transparent; color: var(--primary); border: 1px solid var(--border);
+      border-radius: var(--radius); font: inherit; font-weight: 500; cursor: pointer; font-size: 1rem;
+    }
+    .nav-actions button:hover { border-color: var(--secondary); color: var(--secondary); }
+    .nav-actions button:focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
     .nav-home-box {
       display: inline-flex; align-items: center; justify-content: center;
       width: 3.375rem; height: 3.375rem;
@@ -270,4 +278,4 @@
   </style>
 </head>
 <body>
-  <nav><div class="nav-inner"><a href="/" class="nav-brand" title="Home" aria-label="Home"><span class="nav-home-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span></a><span class="nav-title">Expedition34</span></div></nav>
+  <nav><div class="nav-inner"><a href="/" class="nav-brand" title="Home" aria-label="Home"><span class="nav-home-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span></a><span class="nav-title">Expedition34</span><div class="nav-actions"><form action="/reset" method="post" onsubmit="return confirm('Reset database schema and all sample data?');"><button type="submit">Reset DB</button></form></div></div></nav>

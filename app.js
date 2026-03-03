@@ -4,6 +4,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 35521;
@@ -17,8 +18,28 @@ app.use(express.urlencoded({ extended: true }));
 /*
     ROUTES
 */
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('index', { reset: req.query.reset }));
 
+// Reset schema and sample data: try stored procedure first, then fall back to DDL.sql
+app.post('/reset', async function (req, res) {
+  try {
+    await db.query('CALL ResetSchema()');
+    return res.redirect('/?reset=success');
+  } catch (procError) {
+    // If procedure doesn't exist, run DDL.sql directly
+    try {
+      const ddlPath = path.join(__dirname, 'DDL.sql');
+      let sql = fs.readFileSync(ddlPath, 'utf8');
+      sql = sql.replace(/\s*--[^\n]*/g, ' ').replace(/\/\*[\s\S]*?\*\//g, ' ');
+      await db.query(sql);
+      return res.redirect('/?reset=success');
+    } catch (ddlError) {
+      console.error('ResetSchema procedure failed:', procError?.message);
+      console.error('DDL.sql fallback failed:', ddlError);
+      res.status(500).send('Reset failed. Ensure the ResetSchema stored procedure exists (run reset_schema_procedure.sql in MySQL) or that DDL.sql is present and valid.');
+    }
+  }
+});
 
 app.get('/developers', (req, res) => res.render('developers/index'));
 app.get('/developers/browse', async function (req, res) {
