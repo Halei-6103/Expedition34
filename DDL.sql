@@ -1,8 +1,17 @@
+DROP PROCEDURE IF EXISTS sp_reset_schema;
+
+DELIMITER // 
+
+CREATE PROCEDURE sp_reset_schema ()
+BEGIN 
+
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS Reviews;
 DROP TABLE IF EXISTS Purchases;
 DROP TABLE IF EXISTS Games;
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Developers;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE Developers (
     developerID int AUTO_INCREMENT NOT NULL,
@@ -128,3 +137,5 @@ INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALU
 (3, 3, 2, 'Too repetitive for me.', 'general', '2026-01-15'),
 (3, 1, 4, 'Solid mechanics overall.', 'general', '2026-01-18'),
 (5, 1, 4, 'Good idea but could be improved by doing (example)', 'suggestion', '2026-01-22');
+END //
+DELIMITER ;

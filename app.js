@@ -20,24 +20,15 @@ app.use(express.urlencoded({ extended: true }));
 */
 app.get('/', (req, res) => res.render('index', { reset: req.query.reset }));
 
-// Reset schema and sample data: try stored procedure first, then fall back to DDL.sql
-app.post('/reset', async function (req, res) {
+app.post('/reset', async (req, res) => {
   try {
-    await db.query('CALL ResetSchema()');
-    return res.redirect('/?reset=success');
-  } catch (procError) {
-    // If procedure doesn't exist, run DDL.sql directly
-    try {
-      const ddlPath = path.join(__dirname, 'DDL.sql');
-      let sql = fs.readFileSync(ddlPath, 'utf8');
-      sql = sql.replace(/\s*--[^\n]*/g, ' ').replace(/\/\*[\s\S]*?\*\//g, ' ');
-      await db.query(sql);
-      return res.redirect('/?reset=success');
-    } catch (ddlError) {
-      console.error('ResetSchema procedure failed:', procError?.message);
-      console.error('DDL.sql fallback failed:', ddlError);
-      res.status(500).send('Reset failed. Ensure the ResetSchema stored procedure exists (run reset_schema_procedure.sql in MySQL) or that DDL.sql is present and valid.');
-    }
+    const query = 'CALL sp_reset_schema();';
+    await db.query(query);
+
+    res.redirect(req.get('Referer') || '/'); 
+  } catch (error) {
+    console.error("Error executing stored procedure:", error);
+    res.status(500).send("Database reset failed.");
   }
 });
 
@@ -340,7 +331,7 @@ app.post('/purchases/browse', async function (req, res) {
   try {
      const getPurchaseID = req.body.purchaseID;
 
-     const query = 'DELETE FROM Purchases WHERE purchaseID=?';
+     const query = 'CALL sp_delete_purchases(?)';
 
      await db.query(query, [getPurchaseID]);
      res.redirect('/purchases/browse');
