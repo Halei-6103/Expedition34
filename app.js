@@ -40,7 +40,7 @@ app.get('/developers/browse', async function (req, res) {
 
     res.render('developers/browse', {
       title: 'Browse Developers',
-      developers: rows
+      developers: rows[0]
     });
 
   } catch (error) {
@@ -121,7 +121,7 @@ app.get('/games/browse', async function (req, res) {
 
     res.render('games/browse', {
       title: 'Browse Games',
-      games: games
+      games: games[0]
     });
 
   } catch (error) {
@@ -216,7 +216,7 @@ app.get('/users/browse', async function (req, res) {
 
     res.render('users/browse', {
       title: 'Browse Users',
-      users: users
+      users: users[0]
     });
 
   } catch (error) {
@@ -318,7 +318,7 @@ app.get('/purchases/browse', async function (req, res) {
 
     res.render('purchases/browse', {
       title: 'Browse Purchases',
-      purchases: purchases
+      purchases: purchases[0]
     });
 
   } catch (error) {
@@ -428,7 +428,7 @@ app.get('/reviews/browse', async function (req, res) {
 
     res.render('reviews/browse', {
       title: 'Browse Reviews',
-      reviews: reviews
+      reviews: reviews[0]
     });
 
   } catch (error) {
@@ -478,7 +478,7 @@ app.post('/reviews/add', async function (req, res) {
     const category = req.body.category;
     
     try {
-      const query = 'CALL sp_insert_review(?, ?, ?, ?);';
+      const query = 'CALL sp_insert_review(?, ?, ?, ?, ?);';
 
       await db.query(query, [userID, gameID, rating, comment, category]);
       res.redirect('/reviews/browse');
