@@ -35,7 +35,7 @@ app.post('/reset', async (req, res) => {
 app.get('/developers', (req, res) => res.render('developers/index'));
 app.get('/developers/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Developers.developerID, Developers.developerName, GROUP_CONCAT( DISTINCT Games.title SEPARATOR ", ") AS titles, ROUND(AVG(Reviews.rating), 1) AS avgR FROM Developers LEFT JOIN Games ON Developers.developerID = Games.developerID LEFT JOIN Reviews ON Games.gameID = Reviews.gameID GROUP BY Developers.developerID;';
+    const query1 = 'CALL sp_browse_developers()';
     const [rows] = await db.query(query1);
 
     res.render('developers/browse', {
@@ -52,7 +52,7 @@ app.post('/developers/browse', async function (req, res) {
   try {
      const getDeveloperID = req.body.developerID;
 
-     const query = 'DELETE FROM Developers WHERE developerID=?';
+     const query = 'CALL sp_delete_developer(?)';
 
      await db.query(query, [getDeveloperID]);
      res.redirect('/developers/browse');
@@ -69,7 +69,7 @@ app.get('/developers/add', (req, res) => {
 })
 app.post('/developers/add', async function (req, res) {
   const developerName = req.body.developerName;
-  const query = 'INSERT INTO Developers (developerName) VALUES (?)';
+  const query = 'CALL sp_insert_developer(?);';
 
   try {
     await db.query(query, [developerName]);
@@ -102,7 +102,7 @@ app.post ('/developers/update', async function (req, res) {
     const getDevID = req.body.chooseDev;
     const getNewDevName = req.body.developerChange;
 
-    const query = 'UPDATE Developers SET developerName=? WHERE developerID=?'
+    const query = 'CALL sp_update_developer(?,?)'
 
     await db.query(query, [getNewDevName, getDevID]);
 
@@ -116,7 +116,7 @@ app.post ('/developers/update', async function (req, res) {
 app.get('/games', (req, res) => res.render('games/index'));
 app.get('/games/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Games.gameID, Games.title, Games.price, ROUND(AVG(Reviews.rating),2) AS rating, Games.description, Developers.developerName FROM Games LEFT JOIN Reviews ON Games.gameID=Reviews.gameID LEFT JOIN Developers ON Games.developerID=Developers.developerID GROUP BY Games.gameID, Games.price, Games.description, Developers.developerName;';
+    const query1 = 'CALL sp_browse_games();';
     const [games] = await db.query(query1);
 
     res.render('games/browse', {
@@ -133,7 +133,7 @@ app.post('/games/browse', async function (req, res) {
   try {
      const getGameID = req.body.gameID;
 
-     const query = 'DELETE FROM Games WHERE gameID=?';
+     const query = 'CALL sp_delete_game(?);';
 
      await db.query(query, [getGameID]);
      res.redirect('/games/browse');
@@ -166,7 +166,7 @@ app.post('/games/add', async function (req, res) {
   const description = req.body.gameDescription;
 
   try {
-    const query = 'INSERT INTO Games (developerID, title, price, description) VALUES (?, ?, ?, ?)';
+    const query = 'CALL sp_insert_game(?, ?, ?, ?)';
     await db.query(query, [developerID, title, price, description]);
     return res.redirect('/games/browse');
 
@@ -199,7 +199,7 @@ app.post('/games/update', async function (req,res) {
   const newDesc = req.body.newDescription;
 
   try {
-    const query = 'UPDATE Games SET title=?, price=?, description=? WHERE gameID=?'
+    const query = 'CALL sp_update_game(?, ?, ?, ?);'
     await db.query(query, [gameTitle, newPrice, newDesc, getGameID]);
     res.redirect('/games/browse')
   }catch (error) {
@@ -211,7 +211,7 @@ app.post('/games/update', async function (req,res) {
 app.get('/users', (req, res) => res.render('users/index'));
 app.get('/users/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT * FROM Users;';
+    const query1 = 'CALL sp_browse_users();';
     const [users] = await db.query(query1);
 
     res.render('users/browse', {
@@ -229,7 +229,7 @@ app.post('/users/browse', async function (req, res) {
   try {
      const getUserID = req.body.userID;
 
-     const query = 'DELETE FROM Users WHERE userID=?';
+     const query = 'CALL sp_delete_user(?);';
 
      await db.query(query, [getUserID]);
      res.redirect('/users/browse');
@@ -246,7 +246,7 @@ app.post('/users/add', async function (req, res) {
     const username = req.body.username;
     const accountType = req.body.accountType;
 
-    const query1 = 'INSERT INTO Users (username, accountType) VALUES (?,?);'
+    const query1 = 'CALL sp_insert_user(?, ?)'
     await db.query(query1, [username, accountType]);
 
     return res.redirect('/users/browse');
@@ -277,7 +277,7 @@ app.post('/users/update', async function (req, res) {
   const accountType = req.body.accountType;
 
   try {
-    const query = 'UPDATE Users SET Users.username=?, Users.accountType=? WHERE userID=?;';
+    const query = 'CALL sp_update_user(?,?,?);';
     await db.query(query, [usernameChange, accountType, userID]);
     res.redirect('/users/browse');
   } catch(error){
@@ -300,7 +300,7 @@ app.post('/users/delete', async function (req, res) {
   try{
 
     const userID = req.body.deleteUser;
-    const query = 'DELETE FROM Users WHERE userID=?;'
+    const query = 'CALL sp_delete_user(?);'
 
     await db.query(query, [userID]);
 
@@ -313,7 +313,7 @@ app.post('/users/delete', async function (req, res) {
 app.get('/purchases', (req, res) => res.render('purchases/index'));
 app.get('/purchases/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Purchases.purchaseID, Users.username, Games.title, DATE_FORMAT(Purchases.purchaseDate, "%m/%d/%Y %h:%i %p") AS purchaseDate, Purchases.purchasePrice FROM Purchases LEFT JOIN Games ON Purchases.gameID = Games.gameID INNER JOIN Users ON Purchases.userID = Users.userID;';
+    const query1 = 'CALL sp_browse_purchases();';
     const [purchases] = await db.query(query1);
 
     res.render('purchases/browse', {
@@ -331,7 +331,7 @@ app.post('/purchases/browse', async function (req, res) {
   try {
      const getPurchaseID = req.body.purchaseID;
 
-     const query = 'CALL sp_delete_purchases(?)';
+     const query = 'CALL sp_delete_purchase(?);';
 
      await db.query(query, [getPurchaseID]);
      res.redirect('/purchases/browse');
@@ -368,7 +368,7 @@ app.post('/purchases/add', async function (req,res) {
   const purchasePrice = req.body.purchasePrice;
 
   try {
-    const query =  'INSERT INTO Purchases (userID, gameID, purchaseDate, purchasePrice) VALUES (?, ?, ?, ?)';
+    const query =  'CALL sp_insert_purchase(?, ?, ?, ?);';
 
     await db.query(query, [userID, gameID, purchaseDate, purchasePrice]);
     res.redirect('/purchases/browse')
@@ -411,7 +411,7 @@ app.post('/purchases/update', async function (req, res) {
   const newPurchaseDate = req.body.newDate;
 
   try {
-    const query = 'UPDATE Purchases SET userID=?, gameID=?, purchasePrice=?, purchaseDate=? WHERE purchaseID=?';
+    const query = 'CALL sp_update_purchase(?, ?, ?, ?, ?);';
 
     await db.query(query, [getUserID, getGameID, getPrice, newPurchaseDate, getPurchaseID]);
     res.redirect('/purchases/browse');
@@ -423,7 +423,7 @@ app.post('/purchases/update', async function (req, res) {
 app.get('/reviews', (req, res) => res.render('reviews/index'));
 app.get('/reviews/browse', async function (req, res) {
   try {
-    const query1 = 'SELECT Users.username, Games.title, Reviews.comment, Reviews.rating, Reviews.category, DATE_FORMAT(Reviews.reviewDate, "%b %d %Y") AS reviewDate, Reviews.reviewID FROM Reviews LEFT JOIN Users ON Users.userID = Reviews.userID LEFT JOIN Games ON Games.gameID = Reviews.gameID ORDER BY Reviews.reviewID DESC;';
+    const query1 = 'CALL sp_browse_reviews();';
     const [reviews] = await db.query(query1);
 
     res.render('reviews/browse', {
@@ -441,7 +441,7 @@ app.post('/reviews/browse', async function (req, res) {
   try {
      const getReviewID = req.body.reviewID;
 
-     const query = 'DELETE FROM Reviews WHERE reviewID=?';
+     const query = 'CALL sp_delete_review(?);';
 
      await db.query(query, [getReviewID]);
      res.redirect('/reviews/browse');
@@ -478,7 +478,7 @@ app.post('/reviews/add', async function (req, res) {
     const category = req.body.category;
     
     try {
-      const query = 'INSERT INTO Reviews (userID, gameID, rating, comment, category, reviewDate) VALUES (?, ?, ?, ?, ?, CURDATE() )';
+      const query = 'CALL sp_insert_review(?, ?, ?, ?);';
 
       await db.query(query, [userID, gameID, rating, comment, category]);
       res.redirect('/reviews/browse');
@@ -510,7 +510,7 @@ app.post('/reviews/update', async function (req, res) {
   const newCategory = req.body.newCategory;
 
   try {
-    const query = 'UPDATE Reviews SET comment=?, rating=?, category=? WHERE reviewID=?'
+    const query = 'CALL sp_update_review(?,?,?,?)'
     await db.query(query, [newComment, newRating, newCategory, reviewID]);
 
     res.redirect('/reviews/browse');
